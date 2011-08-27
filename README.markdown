@@ -27,12 +27,20 @@ See `test.html` for a live demo.
   key('o, enter, left', function(){
     console.log('o, enter or left pressed!');
   });
+
+  key('ctrl+c', function(){
+    console.log('this is not the command line');
+  });
+
+  key('⌘+right,shift+left,ctrl+shift+alt+d', function(event){
+    console.log('command+right, or shift+left, or ctrl+shift+alt+d');
+    event.preventDefault();
+  });
 ```
 
 TODOs:
  
   * Make it work on IE (7+) 
-  * Add handling of shift/alt/ctrl/command combinations (e.g. 'shift+left')
   * Add a way to easily cancel propagation/default behavior
   * Make behavior with INPUT/SELECT/TEXTAREA configurable
   * Comprehensive test suite

@@ -43,6 +43,15 @@
     key('o, enter, left', function(){
       console.log('o, enter or left pressed!');
     });
+
+    key('ctrl+c', function(){
+      console.log('this is not the command line');
+    });
+
+    key('⌘+right,shift+left,ctrl+shift+alt+d', function(event){
+      console.log('command+right, or shift+left, or ctrl+shift+alt+d');
+      event.preventDefault();
+    });
   </script>
 </body>
 </html>
