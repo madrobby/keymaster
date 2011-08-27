@@ -47,10 +47,8 @@
       mods = [];
       key = key.split('+');
       if(key.length > 1){
-        console.log(key);
         mods = key.slice(0,key.length-1).map(function(mod){ return _MODIFIERS[mod] });
         key = [key[key.length-1]];
-        console.log(mods,key);
       }
       key = key[0]
       key = key.length > 1 ? _MAP[key] : key.toUpperCase().charCodeAt(0);
