@@ -26,7 +26,10 @@
       if(handler.scope == _scope || handler.scope == 'all')
         if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) ||
           (handler.mods.length > 0 && handler.mods.every(function(mod){ return _mods[mod] })))
-          handler.method(event, handler.key, handler.scope);
+          if(handler.method(event, handler.key, handler.scope)===false){
+            event.stopPropagation();
+            event.preventDefault();
+          }
     });
   }
 

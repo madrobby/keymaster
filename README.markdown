@@ -1,7 +1,7 @@
-keymaster.js is a simple (<50 LoC) micro-library for defining and 
+keymaster.js is a simple (~60 LoC) micro-library for defining and 
 dispatching keyboard shortcuts. It has no dependencies.
 
-It's a work in progress, so spare me your nerdrage but instead
+It's a work in progress, so spare me your nerdrage and instead
 contribute! Patches are welcome, but they are not guaranteed to make
 it in.
 
@@ -40,10 +40,9 @@ See `test.html` for a live demo.
 
 TODOs:
  
-  * Make it work on IE (7+) 
-  * Add a way to easily cancel propagation/default behavior
   * Make behavior with INPUT/SELECT/TEXTAREA configurable
   * Comprehensive test suite
+  * Make it work on IE (7+) (low priority)
 
 keymaster.js is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
 See the `MIT-LICENSE` file.
