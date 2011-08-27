@@ -17,8 +17,8 @@
   
   function dispatch(event){
     var key, tagName;
-    tagName = event.srcElement.tagName;
-    key = event.keyCode.toString();
+    tagName = event.target.tagName;
+    key = '' + event.keyCode;
     if(key in _mods) return _mods[key] = true;
     if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') return;    
     if (!(key in _handlers)) return;
@@ -31,8 +31,8 @@
   }
 
   function clearModifier(event){
-    var key = event.keyCode.toString();
-    if(key in _mods) _mods[key] = false;    
+    var key = '' + event.keyCode;
+    if(key in _mods) _mods[key] = false;
   }
 
   function assignKey(key, scope, method){
@@ -59,8 +59,8 @@
 
   function setScope(scope){ _scope = scope || 'all' }
 
-  document.body.addEventListener('keydown', dispatch);
-  document.body.addEventListener('keyup', clearModifier);
+  document.addEventListener('keydown', dispatch, false);
+  document.addEventListener('keyup', clearModifier, false);
   global.key = assignKey;
   global.keyScope = setScope;
 })(this);
