@@ -31,6 +31,19 @@ key('i', function(){
   console.log('(example of multiple assignment)');
 });
 
+key('i', { id: "TextArea" }, function(){
+  console.log('You pressed i in TextArea');
+});
+
+key('i', { id: "TextArea", scope: "issues" }, function(){
+  keyScope('issues');
+  console.log('You pressed i in TextArea with "issues" scope');
+});
+
+key('t', { tagName: "TEXTAREA" }, function(){
+  console.log('You pressed t in <textarea/>');
+});
+
 key('o, enter, left', function(){
   console.log('o, enter or left pressed!');
 });

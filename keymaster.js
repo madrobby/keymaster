@@ -20,16 +20,23 @@
     tagName = event.target.tagName;
     key = '' + event.keyCode;
     if(key in _mods) return _mods[key] = true;
-    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') return;    
     if (!(key in _handlers)) return;
     _handlers[key].forEach(function(handler){
-      if(handler.scope == _scope || handler.scope == 'all')
-        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) ||
-          (handler.mods.length > 0 && handler.mods.every(function(mod){ return _mods[mod] })))
-          if(handler.method(event, handler.key, handler.scope)===false){
-            event.stopPropagation();
-            event.preventDefault();
-          }
+      if(handler.targetSpec.scope && handler.targetSpec.scope != _scope)
+        return;
+      if(handler.targetSpec.id === null &&
+          (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA'))
+        return;
+      if(handler.targetSpec.id && event.target.id != handler.targetSpec.id)
+        return;
+      if(handler.targetSpec.tagName && event.target.tagName != handler.targetSpec.tagName)
+        return;
+      if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) ||
+        (handler.mods.length > 0 && handler.mods.every(function(mod){ return _mods[mod] })))
+        if(handler.method(event, handler.key, handler.targetSpec.scope)===false){
+          event.stopPropagation();
+          event.preventDefault();
+        }
     });
   }
 
@@ -38,12 +45,14 @@
     if(key in _mods) _mods[key] = false;
   }
 
-  function assignKey(key, scope, method){
+  function assignKey(key, targetSpec, method){
     var keys, mods;
     if (method === undefined) {
-      method = scope;
-      scope = 'all';
+      method = targetSpec;
+      targetSpec = { id: null };
     }
+    if (typeof targetSpec == 'string')
+      targetSpec = { scope: targetSpec };
     key = key.replace(/\s/g,'');
     keys = key.split(',');
     keys.forEach(function(key){
@@ -56,7 +65,7 @@
       key = key[0]
       key = key.length > 1 ? _MAP[key] : key.toUpperCase().charCodeAt(0);
       if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ scope: scope, method: method, mods: mods });
+      _handlers[key].push({ targetSpec: targetSpec, method: method, mods: mods });
     });
   }
 
