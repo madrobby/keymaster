@@ -17,14 +17,14 @@ key('c', 'issues', function(){
  console.log('c/issues');
 });
 
-key('command+r', 'issues', function(){
-  console.log('Hijacked Command+R, damn!');
+key('command+r, ctrl+r', 'issues', function(){
+  console.log('Hijacked Command+R or Ctrl+R, damn!');
   return false;
 });
 
 key('i', function(){
   keyScope('issues');
-  console.log('Switched to "issues" scope. Command+R is now no longer reloading...');
+  console.log('Switched to "issues" scope. Command+R or Ctrl+R is now no longer reloading...');
 });
 
 key('i', function(){
