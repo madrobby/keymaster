@@ -18,9 +18,9 @@
   function dispatch(event){
     var key, tagName;
     tagName = event.target.tagName;
-    key = '' + event.keyCode;
+    key = event.keyCode;
     if(key in _mods) return _mods[key] = true;
-    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') return;    
+    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') return;
     if (!(key in _handlers)) return;
     _handlers[key].forEach(function(handler){
       if(handler.scope == _scope || handler.scope == 'all')
@@ -34,7 +34,7 @@
   }
 
   function clearModifier(event){
-    var key = '' + event.keyCode;
+    var key = event.keyCode;
     if(key in _mods) _mods[key] = false;
   }
 
@@ -46,9 +46,9 @@
     }
     key = key.replace(/\s/g,'');
     keys = key.split(',');
-    keys.forEach(function(key){
+    keys.forEach(function(originalKey){
       mods = [];
-      key = key.split('+');
+      key = originalKey.split('+');
       if(key.length > 1){
         mods = key.slice(0,key.length-1).map(function(mod){ return _MODIFIERS[mod] });
         key = [key[key.length-1]];
@@ -56,7 +56,7 @@
       key = key[0]
       key = key.length > 1 ? _MAP[key] : key.toUpperCase().charCodeAt(0);
       if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ scope: scope, method: method, mods: mods });
+      _handlers[key].push({ scope: scope, method: method, key: originalKey, mods: mods });
     });
   }
 
