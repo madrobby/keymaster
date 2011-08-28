@@ -10,7 +10,7 @@ it in.
 Two global methods are exposed, `key` for defining shortcuts, and
 `keyScope` for switching scope.
 
-See `test.html` for a live demo.
+See [http://chetan51.github.com/keymaster/](http://chetan51.github.com/keymaster/) for a live demo.
 
 ```javascript
 key('c', 'issues', function(){
