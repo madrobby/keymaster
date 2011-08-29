@@ -3,7 +3,8 @@
 //     keymaster.js may be freely distributed under the MIT license.
 
 ;(function(global){
-  var _handlers = {}, 
+  var k,
+    _handlers = {}, 
     _mods = { 16: false, 18: false, 17: false, 91: false },
     _scope = 'all',
     _MODIFIERS = {
@@ -19,22 +20,26 @@
       right: 39, down: 40 };
   
   function dispatch(event){
-    var key, tagName, handler, i, hl, hmi, hmil;
+    var key, tagName, handler, k,i, hl, hmi, hmil, modifiersMatch;
     tagName = (event.target || event.srcElement).tagName;
     key = event.keyCode;
-    if(key in _mods) return _mods[key] = true;
+    if(key in _mods) {
+      _mods[key] = true;
+      for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = true;
+      return;
+    }
     if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') return;
     if (!(key in _handlers)) return;
-    for (var i = 0, hl = _handlers[key].length; i < hl; i++) {
-      var handler = _handlers[key][i];
+    for (i = 0, hl = _handlers[key].length; i < hl; i++) {
+      handler = _handlers[key][i];
       if(handler.scope == _scope || handler.scope == 'all'){
-        var tempv = (handler.mods.length > 0 && (function(){
-          for(var hmi = 0, hmil = handler.mods.length; hmi < hmil; hmi++)
+        modifiersMatch = (handler.mods.length > 0 && (function(){
+          for(hmi = 0, hmil = handler.mods.length; hmi < hmil; hmi++)
             if(!_mods[handler.mods[hmi]])
               return false;
           return true;
         })());
-        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || tempv){
+        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
           if(handler.method(event, handler.key, handler.scope)===false){
             if(event.stopPropagation) event.stopPropagation();
             if(event.cancelBubble) event.cancelBubble();
@@ -47,8 +52,11 @@
   };
 
   function clearModifier(event){
-    var key = event.keyCode;
-    if(key in _mods) _mods[key] = false;
+    var key = event.keyCode, k;
+    if(key in _mods) {
+      _mods[key] = false;
+      for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
+    }
   };
 
   function assignKey(key, scope, method){
@@ -74,6 +82,8 @@
       _handlers[key].push({ scope: scope, method: method, key: keys[i], mods: mods });
     }
   };
+
+  for(k in _MODIFIERS) assignKey[k] = false;
 
   function setScope(scope){ _scope = scope || 'all' };
   

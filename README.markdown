@@ -1,6 +1,6 @@
 # keymaster.js
 
-`keymaster.js` is a simple (~60 LoC) micro-library for defining and 
+Keymaster is a simple (~60 LoC) micro-library for defining and 
 dispatching keyboard shortcuts. It has no dependencies.
 
 It’s a work in progress, so spare me your nerdrage and instead
@@ -9,6 +9,15 @@ it in.
 
 One global methods are exposed, `key` for defining shortcuts.
 Use `key.setScope` for switching scope.
+
+At any point in time (even in code other than key shortcut handlers),
+you can query the `key` object for the state of modifier keys. This
+allows easy implementation of things like shift+click handlers.
+
+For example, `key.shift` is `true` if the shift key is currently pressed.
+
+Keymaster understands the following modifiers:
+`shift`, `option`, `⌥`, `alt`, `ctrl`, `control`, `command`, and `⌘`. 
 
 See `test.html` for a live demo.
 
@@ -42,7 +51,12 @@ key('ctrl+c', function(){
 key('⌘+right,shift+left,ctrl+shift+alt+d', function(event){
   console.log('command+right, or shift+left, or ctrl+shift+alt+d');
   console.log('here is the event: ', event);
-  return false; // prevent default && stop propagation
+  console.log('key.control', key.control);
+  console.log('key.ctrl', key.ctrl);
+  console.log('key.shift', key.shift);
+  console.log('key.alt', key.alt);
+  console.log('key["⌘"]', key["⌘"]);
+  return false; // prevent default & stop propagation
 });
 ```
 
@@ -51,5 +65,5 @@ key('⌘+right,shift+left,ctrl+shift+alt+d', function(event){
 * Make behavior with `INPUT` / `SELECT` / `TEXTAREA` configurable
 * Comprehensive test suite
 
-`keymaster.js` is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
+Keymaster is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
 See the `MIT-LICENSE` file.
