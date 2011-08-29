@@ -18,9 +18,12 @@
       escape: 27, space: 32,
       left: 37, up: 38,
       right: 39, down: 40 };
+
+  // every sorta-polyfill from https://gist.github.com/1037201
+  function every(t,a,b,c,d){for(c=0,d=t;c<d.length;c++)if(!a.call(b,d[c],c,d))return!1;return!0}
   
   function dispatch(event){
-    var key, tagName, handler, k,i, hl, hmi, hmil, modifiersMatch;
+    var key, tagName, handler, k,i, hl, modifiersMatch;
     tagName = (event.target || event.srcElement).tagName;
     key = event.keyCode;
     if(key in _mods) {
@@ -33,12 +36,10 @@
     for (i = 0, hl = _handlers[key].length; i < hl; i++) {
       handler = _handlers[key][i];
       if(handler.scope == _scope || handler.scope == 'all'){
-        modifiersMatch = (handler.mods.length > 0 && (function(){
-          for(hmi = 0, hmil = handler.mods.length; hmi < hmil; hmi++)
-            if(!_mods[handler.mods[hmi]])
-              return false;
-          return true;
-        })());
+        modifiersMatch = handler.mods.length > 0;
+        for(k in _mods)
+          if((!_mods[k] && handler.mods.indexOf(+k) > -1) ||
+            (_mods[k] && handler.mods.indexOf(+k) == -1)) modifiersMatch = false;    
         if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
           if(handler.method(event, handler.key, handler.scope)===false){
             if(event.stopPropagation) event.stopPropagation();
