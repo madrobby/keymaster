@@ -7,8 +7,8 @@ It’s a work in progress, so spare me your nerdrage and instead
 contribute! Patches are welcome, but they are not guaranteed to make
 it in.
 
-Two global methods are exposed, `key` for defining shortcuts, and
-`keyScope` for switching scope.
+One global methods are exposed, `key` for defining shortcuts.
+Use `key.setScope` for switching scope.
 
 See `test.html` for a live demo.
 
@@ -23,7 +23,7 @@ key('command+r, ctrl+r', 'issues', function(){
 });
 
 key('i', function(){
-  keyScope('issues');
+  key.setScope('issues');
   console.log('Switched to "issues" scope. Command+R or Ctrl+R is now no longer reloading...');
 });
 

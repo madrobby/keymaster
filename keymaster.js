@@ -7,7 +7,10 @@
     _mods = { 16: false, 18: false, 17: false, 91: false },
     _scope = 'all',
     _MODIFIERS = {
-      shift: 16, option: 18, '⌥': 18, alt: 18, ctrl: 17, control: 17, command: 91, '⌘': 91 },
+      shift: 16, 
+      option: 18, '⌥': 18, alt: 18, 
+      ctrl: 17, control: 17, 
+      command: 91, '⌘': 91 },
     _MAP = {
       backspace: 8, tab: 9,
       enter: 13, 'return': 13,
@@ -16,7 +19,7 @@
       right: 39, down: 40 };
   
   function dispatch(event){
-    var key, tagName;
+    var key, tagName, handler, i, hl, hmi, hmil;
     tagName = (event.target || event.srcElement).tagName;
     key = event.keyCode;
     if(key in _mods) return _mods[key] = true;
@@ -33,15 +36,10 @@
         })());
         if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || tempv){
           if(handler.method(event, handler.key, handler.scope)===false){
-            if(event.stopPropigation)
-              event.stopPropagation();
-            else if(event.cancelBubble)
-              event.cancelBubble();
-            
-            if(event.preventDefault)
-              event.preventDefault();
-            else
-              event.returnValue = false;
+            if(event.stopPropagation) event.stopPropagation();
+            if(event.cancelBubble) event.cancelBubble();
+            if(event.preventDefault) event.preventDefault();
+              else event.returnValue = false;
           }
         }
       }
@@ -54,19 +52,19 @@
   };
 
   function assignKey(key, scope, method){
-    var keys, mods;
+    var keys, mods, i, mi, kl, ml;
     if (method === undefined) {
       method = scope;
       scope = 'all';
     }
     key = key.replace(/\s/g,'');
     keys = key.split(',');
-    for (var i = 0, kl = keys.length; i < kl; i++) {
+    for (i = 0, kl = keys.length; i < kl; i++) {
       mods = [];
       key = keys[i].split('+');
       if(key.length > 1){
         mods = key.slice(0,key.length-1);
-        for (var mi = 0, ml = mods.length; mi < ml; mi++)
+        for (mi = 0, ml = mods.length; mi < ml; mi++)
           mods[mi] = _MODIFIERS[mods[mi]];
         key = [key[key.length-1]];
       }
@@ -79,18 +77,16 @@
 
   function setScope(scope){ _scope = scope || 'all' };
   
-  function addEvent( obj, type, fn ) {
-    if ( obj.attachEvent ) {
-      obj['e'+type+fn] = fn;
-      obj[type+fn] = function(){obj['e'+type+fn]( window.event );}
-      obj.attachEvent( 'on'+type, obj[type+fn] );
-    } else
-      obj.addEventListener( type, fn, false );
+  function addEvent(object, event, method) {
+    if (object.addEventListener)
+      object.addEventListener(event, method, false);
+    else if(object.attachEvent)
+      object.attachEvent('on'+event, function(){ method(window.event) });
   };
   
   addEvent(document, 'keydown', dispatch);
   addEvent(document, 'keyup', clearModifier);
   
   global.key = assignKey;
-  global.keyScope = setScope;
+  global.key.setScope = setScope;
 })(this);
