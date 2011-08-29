@@ -9,18 +9,24 @@
     _scope = 'all',
     // modifier keys
     _MODIFIERS = {
-      shift: 16, 
+      '⇧': 16, shift: 16, 
       option: 18, '⌥': 18, alt: 18, 
-      ctrl: 17, control: 17, 
-      command: 91, '⌘': 91 },
+      ctrl: 17, control: 17,
+      command: 91, '⌘': 91
+    },
     // special keys 
     _MAP = {
-      backspace: 8, tab: 9,
+      backspace: 8, tab: 9, clear: 12,
       enter: 13, 'return': 13,
-      escape: 27, space: 32,
+      esc: 27, escape: 27, space: 32,
       left: 37, up: 38,
-      right: 39, down: 40 };
-  
+      right: 39, down: 40,
+      del: 46, 'delete': 46,
+      home: 36, end: 35,
+      pageup: 33, pagedown: 34 };
+
+  for(k=1;k<20;k++) _MODIFIERS['f'+k] = 111+k;
+
   // handle keydown event
   function dispatch(event){
     var key, tagName, handler, k, i, modifiersMatch;
@@ -28,6 +34,7 @@
     key = event.keyCode;
     
     // if a modifier key, set the key.<modifierkeyname> property to true and return
+    if(key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
     if(key in _mods) {
       _mods[key] = true;
       // 'assignKey' from inside this closure is exported to window.key
@@ -55,10 +62,10 @@
         // call the handler and stop the event if neccessary
         if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
           if(handler.method(event, handler.key, handler.scope)===false){
-            if(event.stopPropagation) event.stopPropagation();
-            if(event.cancelBubble) event.cancelBubble();
             if(event.preventDefault) event.preventDefault();
               else event.returnValue = false;
+            if(event.stopPropagation) event.stopPropagation();
+            if(event.cancelBubble) event.cancelBubble = true;
           }
         }
       }

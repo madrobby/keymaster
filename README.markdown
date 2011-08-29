@@ -16,7 +16,12 @@ allows easy implementation of things like shift+click handlers. For example,
 `key.shift` is `true` if the shift key is currently pressed.
 
 Keymaster understands the following modifiers:
-`shift`, `option`, `⌥`, `alt`, `ctrl`, `control`, `command`, and `⌘`.
+`⇧`, `shift`, `option`, `⌥`, `alt`, `ctrl`, `control`, `command`, and `⌘`.
+
+The following special keys can be used for shortcuts:
+`backspace`, `tab`, `clear`, `enter`, `return`, `esc`, `escape`, `space`,
+`up`, `down`, `left`, `right`, home`, `end`, `pageup`, `pagedown`, `del`, `delete`
+and `f1` through `f19`.  
 
 When an `INPUT`, `SELECT` or `TEXTAREA` element is focussed, Keymaster
 doens't process shortcuts.
