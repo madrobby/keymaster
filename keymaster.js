@@ -18,9 +18,6 @@
       escape: 27, space: 32,
       left: 37, up: 38,
       right: 39, down: 40 };
-
-  // every sorta-polyfill from https://gist.github.com/1037201
-  function every(t,a,b,c,d){for(c=0,d=t;c<d.length;c++)if(!a.call(b,d[c],c,d))return!1;return!0}
   
   function dispatch(event){
     var key, tagName, handler, k,i, hl, modifiersMatch;
