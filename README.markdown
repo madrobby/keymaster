@@ -43,7 +43,7 @@ if(key.shift) alert('shift is pressed, OMGZ!');
 Keymaster should work with any browser that fires `keyup` and `keydown` events, 
 and is tested with IE (6+), Safari, Firefox and Chrome.
 
-See `test.html` for a live demo.
+See [http://chetan51.github.com/keymaster/](http://chetan51.github.com/keymaster/) for a live demo.
 
 ```javascript
 key('c', 'issues', function(){
