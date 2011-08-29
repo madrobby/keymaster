@@ -75,6 +75,7 @@
   // unset modifier keys on keyup
   function clearModifier(event){
     var key = event.keyCode, k;
+    if(key == 93 || key == 224) key = 91; 
     if(key in _mods) {
       _mods[key] = false;
       for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
