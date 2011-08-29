@@ -20,7 +20,7 @@ Keymaster understands the following modifiers:
 
 The following special keys can be used for shortcuts:
 `backspace`, `tab`, `clear`, `enter`, `return`, `esc`, `escape`, `space`,
-`up`, `down`, `left`, `right`, home`, `end`, `pageup`, `pagedown`, `del`, `delete`
+`up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`
 and `f1` through `f19`.  
 
 When an `INPUT`, `SELECT` or `TEXTAREA` element is focussed, Keymaster
