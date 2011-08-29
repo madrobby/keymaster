@@ -50,7 +50,6 @@ key('⌘+right,shift+left,ctrl+shift+alt+d', function(event){
  
 * Make behavior with `INPUT` / `SELECT` / `TEXTAREA` configurable
 * Comprehensive test suite
-* Make it work on IE (7+) (low priority)
 
 `keymaster.js` is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
 See the `MIT-LICENSE` file.
