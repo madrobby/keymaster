@@ -82,6 +82,45 @@
       _handlers[key].push({ scope: scope, method: method, key: keys[i], mods: mods });
     }
   };
+  
+  function triggerKey(key, target){
+    target=target||window;
+    var ev={target:target};
+    
+    var keys, mods, i, mi, kl, ml, j;
+    key = key.replace(/\s/g,'');
+    keys = key.split(',');
+    for (i = 0, kl = keys.length; i < kl; i++) {
+      mods = [];
+      key = keys[i].split('+');
+      if(key.length > 1){
+        mods = key.slice(0,key.length-1);
+        for (mi = 0, ml = mods.length; mi < ml; mi++)
+          mods[mi] = _MODIFIERS[mods[mi]];
+        key = [key[key.length-1]];
+      }
+      key = key[0]
+      key = key.length > 1 ? _MAP[key] : key.toUpperCase().charCodeAt(0);
+      
+      
+      j=mods.length;
+      while(j--){
+        ev.keyCode=mods[j];
+        dispatch(ev);
+      }
+      
+      ev.keyCode=key;
+      dispatch(ev);
+      
+      j=mods.length;
+      
+      while(j--){
+        ev.keyCode=mods[j];
+        clearModifier(ev);
+      }
+      
+    }
+  }
 
   for(k in _MODIFIERS) assignKey[k] = false;
 
@@ -99,4 +138,5 @@
   
   global.key = assignKey;
   global.key.setScope = setScope;
+  global.key.trigger = triggerKey;
 })(this);
