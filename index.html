@@ -37,7 +37,7 @@
     });
     
     key('i', function(){
-      key.setScope('issues');
+      keyScope('issues');
       console.log('Switched to "issues" scope. Command+R or Ctrl+R is now no longer reloading...');
     });
     
@@ -56,11 +56,6 @@
     key('⌘+right,shift+left,ctrl+shift+alt+d', function(event){
       console.log('command+right, or shift+left, or ctrl+shift+alt+d');
       console.log('here is the event: ', event);
-      console.log('key.control', key.control);
-      console.log('key.ctrl', key.ctrl);
-      console.log('key.shift', key.shift);
-      console.log('key.alt', key.alt);
-      console.log('key["⌘"]', key["⌘"]);
       return false; // prevent default && stop propagation
     });
   </script>
