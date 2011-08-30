@@ -55,7 +55,7 @@ If you're using CoffeeScript, configuring key shortcuts couldn't be simpler:
 ```coffeescript
 key 'a', -> alert('you pressed a!')
 
-key 'ctrl+r', ->
+key '⌘+r, ctrl+r', ->
   alert 'stopped reload!'
   off
 
