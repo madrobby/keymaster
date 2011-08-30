@@ -50,43 +50,19 @@ and is tested with IE (6+), Safari, Firefox and Chrome.
 
 See [http://madrobby.github.com/keymaster/](http://madrobby.github.com/keymaster/) for a live demo.
 
-```javascript
-key('c', 'issues', function(){
- console.log('c/issues');
-});
+If you're using CoffeeScript, configuring key shortcuts couldn't be simpler:
 
-key('command+r, ctrl+r', 'issues', function(){
-  console.log('Hijacked Command+R or Ctrl+R, damn!');
-  return false;
-});
+```coffeescript
+key 'a', -> alert('you pressed a!')
 
-key('i', function(){
-  key.setScope('issues');
-  console.log('Switched to "issues" scope. Command+R or Ctrl+R is now no longer reloading...');
-});
+key 'ctrl+r', ->
+  alert 'stopped reload!'
+  off
 
-key('i', function(){
-  console.log('(example of multiple assignment)');
-});
-
-key('o, enter, left', function(){
-  console.log('o, enter or left pressed!');
-});
-
-key('ctrl+c', function(){
-  console.log('this is not the command line');
-});
-
-key('⌘+right,shift+left,ctrl+shift+alt+d', function(event){
-  console.log('command+right, or shift+left, or ctrl+shift+alt+d');
-  console.log('here is the event: ', event);
-  console.log('key.control', key.control);
-  console.log('key.ctrl', key.ctrl);
-  console.log('key.shift', key.shift);
-  console.log('key.alt', key.alt);
-  console.log('key["⌘"]', key["⌘"]);
-  return false; // prevent default & stop propagation
-});
+key 'o, enter', 'issues' ->
+  whatevs()
+  
+alert 'shift is pressed, OMGZ!' if key.shift
 ```
 
 ## TODO
