@@ -59,7 +59,7 @@ key 'ctrl+r', ->
   alert 'stopped reload!'
   off
 
-key 'o, enter', 'issues' ->
+key 'o, enter', 'issues', ->
   whatevs()
   
 alert 'shift is pressed, OMGZ!' if key.shift
