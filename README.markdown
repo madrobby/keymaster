@@ -65,6 +65,20 @@ key 'o, enter', 'issues', ->
 alert 'shift is pressed, OMGZ!' if key.shift
 ```
 
+The handler method is called with two arguments set, the keydown `event` fired, and
+an object containing, among others, the following two properties:
+
+`shortcut`: a string that contains the shortcut used, e.g. `ctrl+r`
+`scope`: a string describing the scope (or `all`)
+
+```javascript
+key('⌘+r, ctrl+r', function(event, handler){
+  console.log(handler.shortcut, handler.scope);
+});
+
+// "ctrl+r", "all"
+```
+
 ## TODO
  
 * Make behavior with `INPUT` / `SELECT` / `TEXTAREA` configurable

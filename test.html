@@ -67,6 +67,11 @@
       console.log('key["⌘"]', key["⌘"]);
       return false; // prevent default && stop propagation
     });
+
+    key('⌘+x, ctrl+x', function(event, handler){
+      console.log(handler.shortcut, handler.scope);
+      return false;
+    });
   </script>
 </body>
 </html>

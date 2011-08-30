@@ -61,7 +61,7 @@
             (_mods[k] && handler.mods.indexOf(+k) == -1)) modifiersMatch = false;    
         // call the handler and stop the event if neccessary
         if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
-          if(handler.method(event, handler.key, handler.scope)===false){
+          if(handler.method(event, handler)===false){
             if(event.preventDefault) event.preventDefault();
               else event.returnValue = false;
             if(event.stopPropagation) event.stopPropagation();
@@ -107,7 +107,7 @@
       key = key.length > 1 ? _MAP[key] : key.toUpperCase().charCodeAt(0);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ scope: scope, method: method, key: keys[i], mods: mods });
+      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
     }
   };
 
