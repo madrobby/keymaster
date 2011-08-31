@@ -1,6 +1,6 @@
 # keymaster.js
 
-Keymaster is a simple (~60 LoC) micro-library for defining and 
+Keymaster is a simple (~60 LoC) micro-library for defining and
 dispatching keyboard shortcuts. It has no dependencies.
 
 *It’s a work in progress (e.g. beta), so spare me your nerdrage and instead
@@ -12,7 +12,7 @@ called directly. Use `key.setScope` for switching scope.
 
 At any point in time (even in code other than key shortcut handlers),
 you can query the `key` object for the state of modifier keys. This
-allows easy implementation of things like shift+click handlers. For example, 
+allows easy implementation of things like shift+click handlers. For example,
 `key.shift` is `true` if the shift key is currently pressed.
 
 Keymaster understands the following modifiers:
@@ -21,7 +21,7 @@ Keymaster understands the following modifiers:
 The following special keys can be used for shortcuts:
 `backspace`, `tab`, `clear`, `enter`, `return`, `esc`, `escape`, `space`,
 `up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`
-and `f1` through `f19`.  
+and `f1` through `f19`.
 
 When an `INPUT`, `SELECT` or `TEXTAREA` element is focussed, Keymaster
 doens't process shortcuts.
@@ -45,7 +45,7 @@ key.setScope('issues'); // default scope is 'all'
 if(key.shift) alert('shift is pressed, OMGZ!');
 ```
 
-Keymaster should work with any browser that fires `keyup` and `keydown` events, 
+Keymaster should work with any browser that fires `keyup` and `keydown` events,
 and is tested with IE (6+), Safari, Firefox and Chrome.
 
 See [http://madrobby.github.com/keymaster/](http://madrobby.github.com/keymaster/) for a live demo.
@@ -61,7 +61,7 @@ key '⌘+r, ctrl+r', ->
 
 key 'o, enter', 'issues', ->
   whatevs()
-  
+
 alert 'shift is pressed, OMGZ!' if key.shift
 ```
 
@@ -79,8 +79,22 @@ key('⌘+r, ctrl+r', function(event, handler){
 // "ctrl+r", "all"
 ```
 
+## Ender support
+
+Add `keymaster` as a top level method to your [Ender](http://ender.no.de) compilation.
+
+    $ ender add keymaster
+
+Use it:
+
+``` js
+$.key(''⌘+r', function () {
+  alert('reload!')
+})
+```
+
 ## TODO
- 
+
 * Make behavior with `INPUT` / `SELECT` / `TEXTAREA` configurable
 * Comprehensive test suite
 
