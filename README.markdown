@@ -88,7 +88,7 @@ Add `keymaster` as a top level method to your [Ender](http://ender.no.de) compil
 Use it:
 
 ``` js
-$.key(''⌘+r', function () {
+$.key('⌘+r', function () {
   alert('reload!')
 })
 ```
