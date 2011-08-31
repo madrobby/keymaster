@@ -130,8 +130,8 @@
   addEvent(document, 'keyup', clearModifier);
 
   // set window.key and window.key.setScope
-  key.setScope = setScope;
   global.key = assignKey;
+  global.key.setScope = setScope;
 
   if(typeof module !== 'undefined') module.exports = key;
 

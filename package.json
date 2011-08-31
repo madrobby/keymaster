@@ -1,7 +1,7 @@
 {
   "name": "keymaster",
   "description": "library for defining and dispatching keyboard shortcuts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Thomas Fuchs",
   "repository": {
     "type": "git",

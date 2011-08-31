@@ -1,5 +1,5 @@
 !function ($, k) {
   $.ender({
-    key: require('key')
+    key: require('keymaster')
   })
 }(ender)
