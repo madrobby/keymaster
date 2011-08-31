@@ -5,6 +5,7 @@
 </head>
 <body>
   <script src="keymaster.js"></script>
+  <script src="keymaster.sequence.js"></script>
 
   <h1>
     The Keymaster
@@ -67,6 +68,18 @@
       console.log('key["⌘"]', key["⌘"]);
       return false; // prevent default && stop propagation
     });
+
+    key.sequence(["g","s"], function () {
+      console.log("go -> settings");
+    });
+
+    key.sequence(["g","s", "f"], function () {
+      console.log("go -> settings -> fonts");
+    })
+
+    key.sequence(["ctrl+g", "s"], function () {
+      console.log("gogo -> settings");
+    })
   </script>
 </body>
 </html>
