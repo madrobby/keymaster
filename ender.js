@@ -1,8 +1,5 @@
 !function ($, k) {
-  k = require('key')
   $.ender({
-    key: function (combo) {
-      k(combo)
-    }
+    key: require('key')
   })
 }(ender)
