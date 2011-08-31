@@ -4,17 +4,17 @@
 
 ;(function(global){
   var k,
-    _handlers = {}, 
+    _handlers = {},
     _mods = { 16: false, 18: false, 17: false, 91: false },
     _scope = 'all',
     // modifier keys
     _MODIFIERS = {
-      '⇧': 16, shift: 16, 
-      option: 18, '⌥': 18, alt: 18, 
+      '⇧': 16, shift: 16,
+      option: 18, '⌥': 18, alt: 18,
       ctrl: 17, control: 17,
       command: 91, '⌘': 91
     },
-    // special keys 
+    // special keys
     _MAP = {
       backspace: 8, tab: 9, clear: 12,
       enter: 13, 'return': 13,
@@ -32,7 +32,7 @@
     var key, tagName, handler, k, i, modifiersMatch;
     tagName = (event.target || event.srcElement).tagName;
     key = event.keyCode;
-    
+
     // if a modifier key, set the key.<modifierkeyname> property to true and return
     if(key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
     if(key in _mods) {
@@ -54,11 +54,11 @@
 
       // see if it's in the current scope
       if(handler.scope == _scope || handler.scope == 'all'){
-        // check if modifiers match if any 
+        // check if modifiers match if any
         modifiersMatch = handler.mods.length > 0;
         for(k in _mods)
           if((!_mods[k] && handler.mods.indexOf(+k) > -1) ||
-            (_mods[k] && handler.mods.indexOf(+k) == -1)) modifiersMatch = false;    
+            (_mods[k] && handler.mods.indexOf(+k) == -1)) modifiersMatch = false;
         // call the handler and stop the event if neccessary
         if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
           if(handler.method(event, handler)===false){
@@ -75,7 +75,7 @@
   // unset modifier keys on keyup
   function clearModifier(event){
     var key = event.keyCode, k;
-    if(key == 93 || key == 224) key = 91; 
+    if(key == 93 || key == 224) key = 91;
     if(key in _mods) {
       _mods[key] = false;
       for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
@@ -117,19 +117,22 @@
   // set current scope (default 'all')
   function setScope(scope){ _scope = scope || 'all' };
 
-  // cross-browser events  
+  // cross-browser events
   function addEvent(object, event, method) {
     if (object.addEventListener)
       object.addEventListener(event, method, false);
     else if(object.attachEvent)
       object.attachEvent('on'+event, function(){ method(window.event) });
   };
-  
+
   // set the handlers globally on document
   addEvent(document, 'keydown', dispatch);
   addEvent(document, 'keyup', clearModifier);
-  
+
   // set window.key and window.key.setScope
+  key.setScope = setScope;
   global.key = assignKey;
-  global.key.setScope = setScope;
+
+  if(typeof module !== 'undefined') module.exports = key;
+
 })(this);
