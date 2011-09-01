@@ -27,6 +27,13 @@
 
   for(k=1;k<20;k++) _MODIFIERS['f'+k] = 111+k;
 
+  // IE doesn't support Array#indexOf, so have a simple replacement
+  function index(array, item){
+    var i = array.length;
+    while(i--) if(array[i]===item) return i;
+    return -1;
+  }
+
   // handle keydown event
   function dispatch(event){
     var key, tagName, handler, k, i, modifiersMatch;
@@ -57,8 +64,8 @@
         // check if modifiers match if any
         modifiersMatch = handler.mods.length > 0;
         for(k in _mods)
-          if((!_mods[k] && handler.mods.indexOf(+k) > -1) ||
-            (_mods[k] && handler.mods.indexOf(+k) == -1)) modifiersMatch = false;
+          if((!_mods[k] && index(handler.mods, +k) > -1) ||
+            (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
         // call the handler and stop the event if neccessary
         if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
           if(handler.method(event, handler)===false){
