@@ -23,7 +23,12 @@
       right: 39, down: 40,
       del: 46, 'delete': 46,
       home: 36, end: 35,
-      pageup: 33, pagedown: 34 };
+      pageup: 33, pagedown: 34,
+      ',': 188, '.': 190, '/': 191,
+      '`': 192, '-': 189, '=': 187,
+      ';': 186, '\'': 222,
+      '[': 219, ']': 221, '\\': 220  
+    };
 
   for(k=1;k<20;k++) _MODIFIERS['f'+k] = 111+k;
 
@@ -111,7 +116,7 @@
       }
       // convert to keycode and...
       key = key[0]
-      key = key.length > 1 ? _MAP[key] : key.toUpperCase().charCodeAt(0);
+      key = _MAP[key] || key.toUpperCase().charCodeAt(0);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
       _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });

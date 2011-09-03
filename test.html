@@ -72,6 +72,13 @@
       console.log(handler.shortcut, handler.scope);
       return false;
     });
+
+    key('/', function(){ console.log('/') });
+    key('shift+]', function(){ console.log('shift+]') });
+
+    // document.onkeydown = function(event){
+    //  console.log(event.keyCode);
+    // }
   </script>
 </body>
 </html>
