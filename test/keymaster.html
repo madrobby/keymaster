@@ -102,6 +102,47 @@
         t.assertEqual(1, cntCtrlShiftA);
         t.assertEqual(1, cntCommandCtrlShiftA);
         t.assertEqual(1, cntCommandCtrlAltShiftA);
+      },
+
+      testFancyModifierKeys: function(t){
+        var sequence = '';
+        key('⇧+a', function(){ sequence += 'a' });
+        key('⌥+b', function(){ sequence += 'b' });
+        key('⌘+c', function(){ sequence += 'c' });
+
+        keydown(KEYS.shift); keydown(65); keyup(65); keyup(KEYS.shift);
+        keydown(KEYS.option); keydown(66); keyup(66); keyup(KEYS.option);
+        keydown(KEYS.command); keydown(67); keyup(67); keyup(KEYS.command);
+        
+        t.assertEqual('abc', sequence);
+      },
+
+      testNonAlphanumericKeys: function(t){
+        // TODO
+      },
+
+      testNamedSpecialKeys: function(t){
+        // TODO
+      },
+      
+      testEventCancelling: function(t){
+        // TODO
+      },
+
+      testEventArguments: function(t){
+        // TODO
+      },
+
+      testModifierBooleans: function(t){
+        // TODO
+      },
+
+      testScoping: function(t){
+        // TODO
+      },
+
+      testDoesntFireOnUserInputElements: function(t){
+        // TODO
       }
     });
   </script>
