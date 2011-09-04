@@ -131,6 +131,7 @@
 
   // set current scope (default 'all')
   function setScope(scope){ _scope = scope || 'all' };
+  function getScope(){ return scope || 'all' };
 
   // cross-browser events
   function addEvent(object, event, method) {
@@ -147,6 +148,7 @@
   // set window.key and window.key.setScope
   global.key = assignKey;
   global.key.setScope = setScope;
+  global.key.getScope = getScope;
 
   if(typeof module !== 'undefined') module.exports = key;
 
