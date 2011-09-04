@@ -103,6 +103,9 @@
     }
     key = key.replace(/\s/g,'');
     keys = key.split(',');
+
+    if((keys[keys.length-1])=='')
+      keys[keys.length-2] += ',';
     // for each shortcut
     for (i = 0; i < keys.length; i++) {
       // set modifier keys if any

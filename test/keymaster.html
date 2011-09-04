@@ -118,7 +118,20 @@
       },
 
       testNonAlphanumericKeys: function(t){
-        // TODO
+        var sequence = '', character, 
+          keys = { ',': 188, '.': 190, '/': 191,
+            '`': 192, '-': 189, '=': 187,
+            ';': 186, '\'': 222,
+            '[': 219, ']': 221, '\\': 220 };
+
+        for(character in keys){
+          key(character, (function(character){ 
+            return function(){ sequence += character }
+          })(character));
+          keydown(keys[character]); keyup(keys[character]);
+        }
+
+        t.assertEqual(',./`-=;\'[]\\', sequence);
       },
 
       testNamedSpecialKeys: function(t){
