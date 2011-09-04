@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Keymaster unit tests</title>
+  <script src="../keymaster.js"></script>
+  <script src="evidence.js"></script>
+</head>
+<body>
+  <h1>Keymaster unit tests</h1>
+  <p>
+    See the browser console for results.
+  </p>
+
+  <input type="text" id="input_text">
+  <textarea id="textarea"></textarea>
+  <select id="select"></select>
+
+  <script>
+    function $(id){
+      return document.getElementById(id);
+    }
+
+    // because the DOM is retarded,
+    // and browsers don't really care about the DOM API anyway
+    // (IE, Firefox, WebKit are all using different event generators),
+    // we'll just simulate events roughly
+    function keydown(code, el){
+      var event = document.createEvent('Event');  
+      event.initEvent('keydown', true, true);  
+      event.keyCode = code; 
+      (el||document).dispatchEvent(event);
+    }
+
+    function keyup(code, el){
+      var event = document.createEvent('Event');  
+      event.initEvent('keyup', true, true);  
+      event.keyCode = code; 
+      (el||document).dispatchEvent(event);
+    }
+
+    var KEYS = { '⇧': 16, shift: 16,
+      option: 18, '⌥': 18, alt: 18,
+      ctrl: 17, control: 17,
+      command: 91, '⌘': 91 };
+
+    Evidence.TestCase.extend('KeymasterTest', {
+      testShortcut: function(t){
+        var cnt = 0;
+        key('a', function(){ cnt++ });
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cnt);
+        keydown(65);
+        keyup(65);
+        t.assertEqual(2, cnt);
+      },
+
+      testShortcutWithModifiers: function(t){
+        var cntA = 0, cntShiftA = 0, cntCtrlShiftA = 0, cntCommandCtrlShiftA = 0, cntCommandCtrlAltShiftA = 0;
+        key('a', function(){ cntA++ });
+        key('shift+a', function(){ cntShiftA++ });
+        key('ctrl+shift+a', function(){ cntCtrlShiftA++ });
+        key('command+ctrl+shift+a', function(){ cntCommandCtrlShiftA++ });
+        key('command+ctrl+alt+shift+a', function(){ cntCommandCtrlAltShiftA++ });
+
+        keydown(65); keyup(65);
+        t.assertEqual(1, cntA);
+        t.assertEqual(0, cntShiftA);
+        t.assertEqual(0, cntCtrlShiftA);
+        t.assertEqual(0, cntCommandCtrlShiftA);
+        t.assertEqual(0, cntCommandCtrlAltShiftA);                
+
+        keydown(KEYS.shift); keydown(65); keyup(65); keyup(KEYS.shift);
+        t.assertEqual(1, cntA);
+        t.assertEqual(1, cntShiftA);
+        t.assertEqual(0, cntCtrlShiftA);
+        t.assertEqual(0, cntCommandCtrlShiftA);
+        t.assertEqual(0, cntCommandCtrlAltShiftA);  
+
+        keydown(KEYS.shift); keydown(KEYS.ctrl); keydown(65); keyup(65); keyup(KEYS.shift); keyup(KEYS.ctrl);
+        t.assertEqual(1, cntA);
+        t.assertEqual(1, cntShiftA);
+        t.assertEqual(1, cntCtrlShiftA);
+        t.assertEqual(0, cntCommandCtrlShiftA);
+        t.assertEqual(0, cntCommandCtrlAltShiftA);
+
+        keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl); 
+        keydown(65); keyup(65); 
+        keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command);
+        t.assertEqual(1, cntA);
+        t.assertEqual(1, cntShiftA);
+        t.assertEqual(1, cntCtrlShiftA);
+        t.assertEqual(1, cntCommandCtrlShiftA);
+        t.assertEqual(0, cntCommandCtrlAltShiftA);
+
+        keydown(KEYS.alt); keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl); 
+        keydown(65); keyup(65); 
+        keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command); keyup(KEYS.alt);
+        t.assertEqual(1, cntA);
+        t.assertEqual(1, cntShiftA);
+        t.assertEqual(1, cntCtrlShiftA);
+        t.assertEqual(1, cntCommandCtrlShiftA);
+        t.assertEqual(1, cntCommandCtrlAltShiftA);
+      }
+    });
+  </script>
+</body>
+</html>
