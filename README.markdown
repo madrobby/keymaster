@@ -115,13 +115,13 @@ $.key('⌘+r', function () {
 
 ## Contributing
 
-To contribute, please fork Keymaster, add your patch and tests for it (in the `/test` folder) and
+To contribute, please fork Keymaster, add your patch and tests for it (in the `test/` folder) and
 submit a pull request.
 
-## TODO
+## TODOs
 
+* Finish test suite
 * Make behavior with `INPUT` / `SELECT` / `TEXTAREA` configurable
-* Comprehensive test suite
 
 Keymaster is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
 See the `MIT-LICENSE` file.
