@@ -7,6 +7,17 @@ dispatching keyboard shortcuts. It has no dependencies.
 contribute! Patches are welcome, but they are not guaranteed to make
 it in.*
 
+## Usage
+
+Include `keymaster.min.js` in your web app, by loading it as usual:
+
+```html
+<script src="keymaster.min.js"></script>
+```
+
+Keymaster has no dependencies and can be used completely standalone.
+It should not interfere with any JavaScript libraries or frameworks.
+
 ## Defining shortcuts
 
 One global method is exposed, `key` which defines shortcuts when
