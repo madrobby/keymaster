@@ -23,7 +23,7 @@ The following special keys can be used for shortcuts:
 `up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`
 and `f1` through `f19`.
 
-When an `INPUT`, `SELECT` or `TEXTAREA` element is focussed, Keymaster
+When an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster
 doens't process shortcuts.
 
 ```javascript
