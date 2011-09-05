@@ -10,9 +10,9 @@
     // modifier keys
     _MODIFIERS = {
       '⇧': 16, shift: 16,
-      option: 18, '⌥': 18, alt: 18,
+      '⌥': 18, alt: 18, option: 18,
       '⌃': 17, ctrl: 17, control: 17,
-      command: 91, '⌘': 91
+      '⌘': 91, command: 91
     },
     // special keys
     _MAP = {
