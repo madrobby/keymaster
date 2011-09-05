@@ -39,10 +39,12 @@
       (el||document).dispatchEvent(event);
     }
 
-    var KEYS = { '⇧': 16, shift: 16,
-      option: 18, '⌥': 18, alt: 18,
-      ctrl: 17, control: 17,
-      command: 91, '⌘': 91 };
+    var KEYS = {
+      '⇧': 16, shift: 16,
+      '⌥': 18, alt: 18, option: 18,
+      '⌃': 17, ctrl: 17, control: 17,
+      '⌘': 91, command: 91
+    };
 
     Evidence.TestCase.extend('KeymasterTest', {
       testShortcut: function(t){
