@@ -41,8 +41,7 @@
 
   // handle keydown event
   function dispatch(event){
-    var key, tagName, handler, k, i, modifiersMatch;
-    tagName = (event.target || event.srcElement).tagName;
+    var key, handler, k, i, modifiersMatch;
     key = event.keyCode;
 
     // if a modifier key, set the key.<modifierkeyname> property to true and return
@@ -54,8 +53,7 @@
       return;
     }
 
-    // ignore keypressed in any elements that support keyboard data input
-    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') return;
+    if (global.key.ignoreEvent(event)) { return; }
 
     // abort if no potentially matching shortcuts found
     if (!(key in _handlers)) return;
@@ -131,6 +129,12 @@
     }
   };
 
+  // ignore keypressed in any elements that support keyboard data input
+  function defaultIgnoreEvent(event) {
+    var tagName = (event.target || event.srcElement).tagName;
+    return tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA';
+  };
+
   // initialize key.<modifier> to false
   for(k in _MODIFIERS) assignKey[k] = false;
 
@@ -157,6 +161,7 @@
   global.key = assignKey;
   global.key.setScope = setScope;
   global.key.getScope = getScope;
+  global.key.ignoreEvent = defaultIgnoreEvent;
 
   if(typeof module !== 'undefined') module.exports = key;
 

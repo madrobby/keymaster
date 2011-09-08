@@ -86,7 +86,8 @@ key.setScope('issues'); // default scope is 'all'
 ## Notes
 
 When an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster
-doesn't process shortcuts.
+doesn't process shortcuts. You can change this behavior by changing the
+`key.ignoreEvent` function.
 
 Keymaster should work with any browser that fires `keyup` and `keydown` events,
 and is tested with IE (6+), Safari, Firefox and Chrome.

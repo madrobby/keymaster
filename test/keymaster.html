@@ -44,9 +44,15 @@
       '⌥': 18, alt: 18, option: 18,
       '⌃': 17, ctrl: 17, control: 17,
       '⌘': 91, command: 91
-    };
+    },
+
+    originalIgnoreEvent = key.ignoreEvent;
 
     Evidence.TestCase.extend('KeymasterTest', {
+      tearDown: function() {
+        key.ignoreEvent = originalIgnoreEvent;
+      },
+
       testShortcut: function(t){
         var cnt = 0;
         key('a', function(){ cnt++ });
@@ -166,6 +172,17 @@
         keydown(65, $('input_text'));
         keyup(65, $('input_text'));
         t.assertEqual(1, cnt);
+      },
+
+      testDoesntFireOnCustomIgnoredElements: function(t){
+        var cnt = 0;
+        key.ignoreEvent = function(event) { return false; };
+        key('a', function(){ cnt++; });
+        keydown(65, $('paragraph'));
+        keyup(65, $('paragraph'));
+        keydown(65, $('input_text'));
+        keyup(65, $('input_text'));
+        t.assertEqual(2, cnt);
       }
 
     });
