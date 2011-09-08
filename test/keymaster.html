@@ -39,10 +39,12 @@
       (el||document).dispatchEvent(event);
     }
 
-    var KEYS = { '⇧': 16, shift: 16,
-      option: 18, '⌥': 18, alt: 18,
-      ctrl: 17, control: 17,
-      command: 91, '⌘': 91 };
+    var KEYS = {
+      '⇧': 16, shift: 16,
+      '⌥': 18, alt: 18, option: 18,
+      '⌃': 17, ctrl: 17, control: 17,
+      '⌘': 91, command: 91
+    };
 
     Evidence.TestCase.extend('KeymasterTest', {
       testShortcut: function(t){
@@ -106,15 +108,17 @@
 
       testFancyModifierKeys: function(t){
         var sequence = '';
-        key('⇧+a', function(){ sequence += 'a' });
+        key('⌃+a', function(){ sequence += 'a' });
         key('⌥+b', function(){ sequence += 'b' });
-        key('⌘+c', function(){ sequence += 'c' });
+        key('⇧+c', function(){ sequence += 'c' });
+        key('⌘+d', function(){ sequence += 'd' });
 
-        keydown(KEYS.shift); keydown(65); keyup(65); keyup(KEYS.shift);
+        keydown(KEYS.ctrl); keydown(65); keyup(65); keyup(KEYS.ctrl);
         keydown(KEYS.option); keydown(66); keyup(66); keyup(KEYS.option);
-        keydown(KEYS.command); keydown(67); keyup(67); keyup(KEYS.command);
+        keydown(KEYS.shift); keydown(67); keyup(67); keyup(KEYS.shift);
+        keydown(KEYS.command); keydown(68); keyup(68); keyup(KEYS.command);
         
-        t.assertEqual('abc', sequence);
+        t.assertEqual('abcd', sequence);
       },
 
       testNonAlphanumericKeys: function(t){
