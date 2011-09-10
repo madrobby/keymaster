@@ -131,7 +131,7 @@
 
   // set current scope (default 'all')
   function setScope(scope){ _scope = scope || 'all' };
-  function getScope(){ return scope || 'all' };
+  function getScope(){ return _scope || 'all' };
 
   // cross-browser events
   function addEvent(object, event, method) {
