@@ -65,9 +65,9 @@
       handler = _handlers[key][i];
 
       // see if it's in the current scope
-		inScope = false
-		scopes = _scope.replace(/\ /g, '').split(',')
-		for(s in scopes) if(handler.scope == scopes[s]) inScope = true;
+      inScope = false
+      scopes = _scope.replace(/\ /g, '').split(',')
+      for(s in scopes) if(handler.scope == scopes[s]) inScope = true;
       if(inScope || handler.scope == 'all'){
         // check if modifiers match if any
         modifiersMatch = handler.mods.length > 0;
