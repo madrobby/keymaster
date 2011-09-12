@@ -67,7 +67,7 @@
       // see if it's in the current scope
       inScope = false
       scopes = _scope.replace(/\ /g, '').split(',')
-      for(s in _scopes) if(handler.scope == scopes[s]) inScope = true;
+      for(s in scopes) if(handler.scope == scopes[s]) inScope = true;
       if(inScope || handler.scope == 'all'){
         // check if modifiers match if any
         modifiersMatch = handler.mods.length > 0;
