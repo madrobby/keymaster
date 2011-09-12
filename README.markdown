@@ -83,6 +83,15 @@ key('o, enter', 'files', function(){ /* do something else */ });
 key.setScope('issues'); // default scope is 'all'
 ```
 
+You can also set shortcuts to trigger on multiple scopes:
+
+```javascript
+key('q', 'issues, files', function() { /* do something */ });
+
+key.setScope('issues') # q shortcut will run on this scope...
+key.setScope('files')  # ... and this one!
+```
+
 ## Notes
 
 When an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster
