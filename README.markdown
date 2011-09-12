@@ -88,8 +88,8 @@ You can also set shortcuts to trigger on multiple scopes:
 ```javascript
 key('q', 'issues, files', function() { /* do something */ });
 
-key.setScope('issues') # q shortcut will run on this scope...
-key.setScope('files')  # ... and this one!
+key.setScope('issues') // q shortcut will run on this scope...
+key.setScope('files')  // ... and this one!
 ```
 
 ## Notes
