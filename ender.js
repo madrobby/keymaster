@@ -1,4 +1,4 @@
-!function ($, k) {
+!function ($) {
   $.ender({
     key: require('keymaster')
   })
