@@ -13,6 +13,7 @@
   <input type="text" placeholder="a text input"/>
   <select><option></option><option>select</option></select>
   <textarea placeholder="a textarea"></textarea>
+  <textarea placeholder="Shortcuts are enabled for this textarea" class="keymaster-enabled"></textarea>
 
   <ol>
     <li>Press 'c'. Nothing should be logged on console.</li>
@@ -27,7 +28,7 @@
   </p>
   
   <p>
-    When a input, a select or a textarea element is focused, key inputs should be ignored.
+    When a input, a select or a textarea element is focused, key inputs should be ignored unless this element has the class <code>keymaster-enabled</code>.
   </p>
 
   <script>

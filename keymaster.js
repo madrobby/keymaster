@@ -55,7 +55,9 @@
     }
 
     // ignore keypressed in any elements that support keyboard data input
-    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') return;
+    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') {
+        if (!(event.target || event.srcElement).classList.contains('keymaster-enabled')) return;
+    }
 
     // abort if no potentially matching shortcuts found
     if (!(key in _handlers)) return;
