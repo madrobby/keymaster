@@ -110,6 +110,23 @@ key 'o, enter', 'issues', ->
 alert 'shift is pressed, OMGZ!' if key.shift
 ```
 
+## Clojure
+
+It's simple to reference Keymaster from a Clojure lib, using ClojureScript's JavaScript integration:
+
+```clojure
+(defn key [&args] (if args (js/key args) (js/key))) ; Simple wrapper function
+(defn alert [#^String str] (js/alert str)) ; Wrapper for JavaScript alert
+
+(key "a" #(alert "You pressed 'a'!")) ; passing an anonymous function to the key function
+(if (.shift key) (alert "Shift is pressed!")) ; using Clojure's syntactic sugar to use a JS method from Keymaster
+; multiple shortcuts to print the fibonacci sequence
+(key "ctrl-j, ⌘-j"
+  #(.write js/document
+    (take 5 (map first 
+      (iterate (fn [[a b]] [b (+ a b)]) [0 1])))))
+```
+
 ## Ender support
 
 Add `keymaster` as a top level method to your [Ender](http://ender.no.de) compilation.
