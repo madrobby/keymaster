@@ -155,7 +155,22 @@
       },
 
       testScoping: function(t){
-        // TODO
+          var sequence = '';
+
+          key('a', function(){ sequence += 'a' });
+          key('b', function(){ sequence += 'b' });
+          key('b', 'capital', function(){ sequence += 'B' });
+
+          keydown(65); keyup(65);
+          key.setScope('capital');
+          keydown(66); keyup(66);
+          keydown(65); keyup(65);
+          key.setScope('unknown');
+          keydown(66); keyup(66);
+          key.setScope('all');
+          keydown(65); keyup(65);
+
+          t.assertEqual('abBaba', sequence);
       },
 
       testDoesntFireOnUserInputElements: function(t){
