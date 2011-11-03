@@ -173,6 +173,26 @@
           t.assertEqual('abBaba', sequence);
       },
 
+      testDeleteScope: function(t){
+          var sequence = '';
+
+          key('a', function(){ sequence += 'a' });
+          key('b', function(){ sequence += 'b' });
+          key('a', 'capital', function(){ sequence += 'A' });
+          key('b', 'capital', function(){ sequence += 'B' });
+
+          keydown(65); keyup(65);
+          keydown(66); keyup(66);
+          key.setScope('capital');
+          keydown(65); keyup(65);
+          keydown(66); keyup(66);
+          key.deleteScope('capital');
+          keydown(65); keyup(65);
+          keydown(66); keyup(66);
+
+          t.assertEqual('abaAbBab', sequence);
+      },
+
       testDoesntFireOnUserInputElements: function(t){
         // TODO
       }
