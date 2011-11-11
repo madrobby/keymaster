@@ -95,11 +95,8 @@
   };
 
   function resetModifiers() {
-    for (k in _mods) {
-      if (_mods.hasOwnProperty(k)) {
-        _mods[k] = false;
-      }
-    }
+    for(k in _mods) _mods[k] = false;
+    for(k in _MODIFIERS) assignKey[k] = false;
   }
 
   // parse and assign shortcut
