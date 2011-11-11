@@ -94,6 +94,14 @@
     }
   };
 
+  function resetModifiers() {
+    for (k in _mods) {
+      if (_mods.hasOwnProperty(k)) {
+        _mods[k] = false;
+      }
+    }
+  }
+
   // parse and assign shortcut
   function assignKey(key, scope, method){
     var keys, mods, i, mi;
@@ -143,6 +151,9 @@
   // set the handlers globally on document
   addEvent(document, 'keydown', dispatch);
   addEvent(document, 'keyup', clearModifier);
+
+  // reset modifiers to false whenever the window is (re)focused.
+  addEvent(window, 'focus', resetModifiers);
 
   // set window.key and window.key.setScope
   global.key = assignKey;
