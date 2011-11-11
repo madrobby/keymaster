@@ -157,6 +157,25 @@
       testScoping: function(t){
         // TODO
       },
+      
+      testMultiScoping: function(t){
+        var cnt = 0;
+        key.setScope()
+        key('a', 'hello, world', function(){ cnt++ });
+        keydown(65);
+        keyup(65);
+        t.assertEqual(0, cnt);
+        
+        key.setScope('hello');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cnt);
+        
+        key.setScope('world')
+        keydown(65);
+        keyup(65);
+        t.assertEqual(2, cnt);
+      },
 
       testDoesntFireOnUserInputElements: function(t){
         // TODO
