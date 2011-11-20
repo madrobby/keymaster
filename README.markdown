@@ -83,13 +83,14 @@ key('o, enter', 'files', function(){ /* do something else */ });
 key.setScope('issues'); // default scope is 'all'
 ```
 
-You can also set shortcuts to trigger on multiple scopes:
+Multiple scopes can also be triggered
 
 ```javascript
-key('q', 'issues, files', function() { /* do something */ });
+key('q', 'issues', function() { /* do something */ });
 
-key.setScope('issues') // q shortcut will run on this scope...
-key.setScope('files')  // ... and this one!
+key('r', 'files', function() { /* do something */ });
+
+key.setScope('issues, files') // q shortcut and r shortcut will run on this scope...
 ```
 
 ## Notes
