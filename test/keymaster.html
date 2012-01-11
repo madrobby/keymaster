@@ -8,7 +8,7 @@
 </head>
 <body>
   <h1>Keymaster unit tests</h1>
-  <p>
+  <p id="paragraph">
     See the browser console for results.
   </p>
 
@@ -159,8 +159,15 @@
       },
 
       testDoesntFireOnUserInputElements: function(t){
-        // TODO
+        var cnt = 0;
+        key('a', function(){ cnt++; });
+        keydown(65, $('paragraph'));
+        keyup(65, $('paragraph'));
+        keydown(65, $('input_text'));
+        keyup(65, $('input_text'));
+        t.assertEqual(1, cnt);
       }
+
     });
   </script>
 </body>
