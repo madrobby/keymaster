@@ -83,7 +83,7 @@ key('o, enter', 'files', function(){ /* do something else */ });
 key.setScope('issues'); // default scope is 'all'
 ```
 
-## veto keypresses
+## Veto keypresses 
 
 By default, when in an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster doesn't process any shortcuts.
 
