@@ -41,8 +41,7 @@
 
   // handle keydown event
   function dispatch(event){
-    var key, tagName, handler, k, i, modifiersMatch;
-    tagName = (event.target || event.srcElement).tagName;
+    var key, handler, k, i, modifiersMatch;
     key = event.keyCode;
 
     // if a modifier key, set the key.<modifierkeyname> property to true and return
@@ -54,8 +53,10 @@
       return;
     }
 
-    // ignore keypressed in any elements that support keyboard data input
-    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') return;
+    //need a prekeydown hook, so that this can be overridden.
+    //by default, this will ignore key presses if a select, textarea, or input is focused.
+    //but it can be overridden so that it's possible to say, change the scope.
+    if(assignKey.prekeydown.call(this, event) === false) return;
 
     // abort if no potentially matching shortcuts found
     if (!(key in _handlers)) return;
@@ -130,6 +131,13 @@
       _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
     }
   };
+
+  assignKey.prekeydown = function (e) {
+    var tagName = (event.target || event.srcElement).tagName;
+    // ignore keypressed in any elements that support keyboard data input
+    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA') 
+      return false;
+  }
 
   // initialize key.<modifier> to false
   for(k in _MODIFIERS) assignKey[k] = false;
