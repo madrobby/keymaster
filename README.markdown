@@ -83,10 +83,15 @@ key('o, enter', 'files', function(){ /* do something else */ });
 key.setScope('issues'); // default scope is 'all'
 ```
 
-## Notes
+## veto keypresses
 
-When an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster
-doesn't process shortcuts.
+By default, when in an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster doesn't process any shortcuts.
+
+You can change this by overwriting `key.prekeydown` with a new function.
+
+If your function returns false, then the no shortcuts will be processed. If you only want _some_ shortcuts to work while in a input element, you can change the scope in the key.prekeydown funtcion
+
+## Notes
 
 Keymaster should work with any browser that fires `keyup` and `keydown` events,
 and is tested with IE (6+), Safari, Firefox and Chrome.
