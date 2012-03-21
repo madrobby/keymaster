@@ -83,13 +83,27 @@ key('o, enter', 'files', function(){ /* do something else */ });
 key.setScope('issues'); // default scope is 'all'
 ```
 
-## Veto keypresses 
+## Filter key presses 
 
-By default, when in an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster doesn't process any shortcuts.
+By default, when a `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster doesn't process any shortcuts.
 
-You can change this by overwriting `key.prekeydown` with a new function.
+You can change this by overwriting `key.filter` with a new function. This function is called before
+Keymaster processes shortcuts, with the keydown event as argument.
 
-If your function returns false, then the no shortcuts will be processed. If you only want _some_ shortcuts to work while in a input element, you can change the scope in the key.prekeydown funtcion
+If your function returns false, then the no shortcuts will be processed.
+
+Here's the default implementation for reference:
+
+```javascript
+function filter(event){
+  var tagName = (event.target || event.srcElement).tagName;
+  return !(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
+}
+```
+
+If you only want _some_ shortcuts to work while in a input element, you change the scope in the 
+key.filter function; however a more robust way to handle this is to use proper
+focus and blur event handlers on your input element, and change scopes there as you see fit.
 
 ## Notes
 
