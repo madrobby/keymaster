@@ -195,6 +195,27 @@
 
       testDoesntFireOnUserInputElements: function(t){
         // TODO
+      },
+      
+      testCallsFilterFunction: function(t){
+        var oldFilter = key.filter, filterCalls = 0, keyCalls = 0;
+        
+        key.filter = function(event){
+          filterCalls++;
+          return false;
+        }
+        
+        key('a', function(){ keyCalls++; });
+        keydown(65); keyup(65);
+        
+        t.assertEqual(1, filterCalls);
+        t.assertEqual(0, keyCalls);
+        
+        key.filter = oldFilter;        
+        keydown(65); keyup(65);
+        
+        t.assertEqual(1, filterCalls);
+        t.assertEqual(1, keyCalls);
       }
     });
   </script>
