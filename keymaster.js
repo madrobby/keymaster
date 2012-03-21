@@ -138,6 +138,19 @@
   function setScope(scope){ _scope = scope || 'all' };
   function getScope(){ return _scope || 'all' };
 
+  // delete all handlers for a given scope
+  function deleteScope(scope){
+    var key, handlers, i;
+
+    for (key in _handlers) {
+      handlers = _handlers[key];
+      for (i = 0; i < handlers.length; ) {
+        if (handlers[i].scope === scope) handlers.splice(i, 1);
+        else i++;
+      }
+    }
+  };
+
   // cross-browser events
   function addEvent(object, event, method) {
     if (object.addEventListener)
@@ -157,6 +170,7 @@
   global.key = assignKey;
   global.key.setScope = setScope;
   global.key.getScope = getScope;
+  global.key.deleteScope = deleteScope;
 
   if(typeof module !== 'undefined') module.exports = key;
 
