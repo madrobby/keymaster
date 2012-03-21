@@ -151,7 +151,6 @@ submit a pull request.
 ## TODOs
 
 * Finish test suite
-* Make behavior with `INPUT` / `SELECT` / `TEXTAREA` configurable
 
 Keymaster is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
 See the `MIT-LICENSE` file.
