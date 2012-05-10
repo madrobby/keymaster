@@ -99,15 +99,12 @@
     for(k in _MODIFIERS) assignKey[k] = false;
   }
 
-  // parse and assign shortcut
-  function assignKey(key, scope, method){
-    var keys, mods, i, mi;
-    if (method === undefined) {
-      method = scope;
-      scope = 'all';
-    }
+  // parse shortcut.
+  function parseKey(key) {
+    var keys, mods, i, mi, res;
     key = key.replace(/\s/g,'');
     keys = key.split(',');
+    res = {};
 
     if((keys[keys.length-1])=='')
       keys[keys.length-2] += ',';
@@ -122,14 +119,66 @@
           mods[mi] = _MODIFIERS[mods[mi]];
         key = [key[key.length-1]];
       }
-      // convert to keycode and...
+      // convert to keycode
       key = key[0]
       key = _MAP[key] || key.toUpperCase().charCodeAt(0);
-      // ...store handler
+
+      // Store
+      res[keys[i]] = { key: key, mods: mods };
+    }
+
+    // return
+    return res;
+  }
+
+  // parse and assign shortcut
+  function assignKey(key, scope, method){
+    var keys, name, key, mods;
+    if (method === undefined) {
+      method = scope;
+      scope = 'all';
+    }
+    keys = parseKey(key);
+    for (name in keys) {
+      key = keys[name].key;
+      mods = keys[name].mods;
       if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      _handlers[key].push({ shortcut: name, scope: scope, method: method, key: name, mods: mods });
     }
   };
+
+  // Trigger a shortcut
+  function triggerKey(key) {
+    var ev, keys, name, key, mods, mod, index, handler, scope;
+
+    keys = parseKey(key);
+    scope = getScope();
+
+    for (name in keys) {
+      key = keys[name].key;
+      mods = keys[name].mods;
+
+      // DOM API is retarded..
+      ev = document.createEvent("Event");
+      ev.initEvent('keyup', true, true);
+      ev.keyCode = key;
+
+      if (!(key in _handlers)) continue;
+
+      for (index in _handlers[key]) {
+        handler = _handlers[key][index];
+        
+        // Compare mods.
+        if (!(mods.length === handler.mods.length)) continue;
+        for (mod in mods)
+          if (!(mod in handler.mods)) continue;
+
+        if (!(handler.scope === scope || handler.scope === 'all')) continue;
+
+        handler.method(ev);
+      } 
+    }
+  }
 
   function filter(event){
     var tagName = (event.target || event.srcElement).tagName;
@@ -178,6 +227,7 @@
   global.key.getScope = getScope;
   global.key.deleteScope = deleteScope;
   global.key.filter = filter;
+  global.key.triggerKey = triggerKey;
 
   if(typeof module !== 'undefined') module.exports = key;
 

@@ -193,6 +193,24 @@
           t.assertEqual('abaAbBab', sequence);
       },
 
+      testTriggerManually: function (t) {
+        var foo = false;
+
+        // With scope 'all'
+        key('ctrl+a', function () { foo = true; });
+        // With scope 'foo'
+        key('ctrl+a', 'foo', function () { foo = false; });
+
+        key.triggerKey('ctrl+a');
+        t.assert(foo);
+
+        key.setScope('foo');
+        key.triggerKey('ctrl+a');
+        t.assert(!foo);
+
+        key.setScope('all');
+      },
+
       testDoesntFireOnUserInputElements: function(t){
         // TODO
       },
