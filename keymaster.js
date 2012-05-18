@@ -29,6 +29,22 @@
       ';': 186, '\'': 222,
       '[': 219, ']': 221, '\\': 220
     };
+    // Reverse map, for confusing keycodes..
+    _REVERSE_MAP = {
+      // numeric pad numbers have different keycodes,
+      // map them to their number counter part
+      // 0 to 9
+      96: 48, // 0
+      97: 49, // 1
+      98: 50, // 2
+      99: 51, // 3
+      100: 52, // 4
+      101: 53, // 5
+      102: 54, // 6
+      103: 55, // 7
+      104: 56, // 8
+      105: 57
+    };
 
   for(k=1;k<20;k++) _MODIFIERS['f'+k] = 111+k;
 
@@ -42,7 +58,7 @@
   // handle keydown event
   function dispatch(event){
     var key, handler, k, i, modifiersMatch;
-    key = event.keyCode;
+    key = _REVERSE_MAP[event.keyCode] || event.keyCode;
 
     // if a modifier key, set the key.<modifierkeyname> property to true and return
     if(key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
