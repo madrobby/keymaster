@@ -141,7 +141,7 @@
   for(k in _MODIFIERS) assignKey[k] = false;
 
   // set current scope (default 'all')
-  function setScope(scope){ _scope = scope || 'all' };
+  function setScope(scope){ setTimeout(function(){ _scope = scope || 'all' }, 0) };
   function getScope(){ return _scope || 'all' };
 
   // delete all handlers for a given scope
