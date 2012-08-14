@@ -26,16 +26,16 @@
     // (IE, Firefox, WebKit are all using different event generators),
     // we'll just simulate events roughly
     function keydown(code, el){
-      var event = document.createEvent('Event');  
-      event.initEvent('keydown', true, true);  
-      event.keyCode = code; 
+      var event = document.createEvent('Event');
+      event.initEvent('keydown', true, true);
+      event.keyCode = code;
       (el||document).dispatchEvent(event);
     }
 
     function keyup(code, el){
-      var event = document.createEvent('Event');  
-      event.initEvent('keyup', true, true);  
-      event.keyCode = code; 
+      var event = document.createEvent('Event');
+      event.initEvent('keyup', true, true);
+      event.keyCode = code;
       (el||document).dispatchEvent(event);
     }
 
@@ -71,14 +71,14 @@
         t.assertEqual(0, cntShiftA);
         t.assertEqual(0, cntCtrlShiftA);
         t.assertEqual(0, cntCommandCtrlShiftA);
-        t.assertEqual(0, cntCommandCtrlAltShiftA);                
+        t.assertEqual(0, cntCommandCtrlAltShiftA);
 
         keydown(KEYS.shift); keydown(65); keyup(65); keyup(KEYS.shift);
         t.assertEqual(1, cntA);
         t.assertEqual(1, cntShiftA);
         t.assertEqual(0, cntCtrlShiftA);
         t.assertEqual(0, cntCommandCtrlShiftA);
-        t.assertEqual(0, cntCommandCtrlAltShiftA);  
+        t.assertEqual(0, cntCommandCtrlAltShiftA);
 
         keydown(KEYS.shift); keydown(KEYS.ctrl); keydown(65); keyup(65); keyup(KEYS.shift); keyup(KEYS.ctrl);
         t.assertEqual(1, cntA);
@@ -87,8 +87,8 @@
         t.assertEqual(0, cntCommandCtrlShiftA);
         t.assertEqual(0, cntCommandCtrlAltShiftA);
 
-        keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl); 
-        keydown(65); keyup(65); 
+        keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
+        keydown(65); keyup(65);
         keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command);
         t.assertEqual(1, cntA);
         t.assertEqual(1, cntShiftA);
@@ -96,8 +96,8 @@
         t.assertEqual(1, cntCommandCtrlShiftA);
         t.assertEqual(0, cntCommandCtrlAltShiftA);
 
-        keydown(KEYS.alt); keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl); 
-        keydown(65); keyup(65); 
+        keydown(KEYS.alt); keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
+        keydown(65); keyup(65);
         keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command); keyup(KEYS.alt);
         t.assertEqual(1, cntA);
         t.assertEqual(1, cntShiftA);
@@ -117,19 +117,19 @@
         keydown(KEYS.option); keydown(66); keyup(66); keyup(KEYS.option);
         keydown(KEYS.shift); keydown(67); keyup(67); keyup(KEYS.shift);
         keydown(KEYS.command); keydown(68); keyup(68); keyup(KEYS.command);
-        
+
         t.assertEqual('abcd', sequence);
       },
 
       testNonAlphanumericKeys: function(t){
-        var sequence = '', character, 
+        var sequence = '', character,
           keys = { ',': 188, '.': 190, '/': 191,
             '`': 192, '-': 189, '=': 187,
             ';': 186, '\'': 222,
             '[': 219, ']': 221, '\\': 220 };
 
         for(character in keys){
-          key(character, (function(character){ 
+          key(character, (function(character){
             return function(){ sequence += character }
           })(character));
           keydown(keys[character]); keyup(keys[character]);
@@ -141,7 +141,7 @@
       testNamedSpecialKeys: function(t){
         // TODO
       },
-      
+
       testEventCancelling: function(t){
         // TODO
       },
@@ -155,65 +155,78 @@
       },
 
       testScoping: function(t){
-          var sequence = '';
+        var sequence = '';
 
-          key('a', function(){ sequence += 'a' });
-          key('b', function(){ sequence += 'b' });
-          key('b', 'capital', function(){ sequence += 'B' });
+        key('a', function(){ sequence += 'a' });
+        key('b', function(){ sequence += 'b' });
+        key('b', 'capital', function(){ sequence += 'B' });
 
-          keydown(65); keyup(65);
-          key.setScope('capital');
-          keydown(66); keyup(66);
-          keydown(65); keyup(65);
-          key.setScope('unknown');
-          keydown(66); keyup(66);
-          key.setScope('all');
-          keydown(65); keyup(65);
+        keydown(65); keyup(65);
+        key.setScope('capital');
+        keydown(66); keyup(66);
+        keydown(65); keyup(65);
+        key.setScope('unknown');
+        keydown(66); keyup(66);
+        key.setScope('all');
+        keydown(65); keyup(65);
 
-          t.assertEqual('abBaba', sequence);
+        t.assertEqual('abBaba', sequence);
+
+        // it should not call second callback after changing scope in one of callbacks
+        var sequence = '';
+
+        key('c', 'a', function(){ sequence += 'a'; key.setScope('b');  });
+        key('c', 'b', function(){ sequence += 'b'; });
+
+        key.setScope('a');
+        keydown(67); keyup(67);
+        keydown(67); keyup(67);
+        key.setScope('all');
+
+        t.assertEqual('ab', sequence);
       },
 
       testDeleteScope: function(t){
-          var sequence = '';
+        var sequence = '';
 
-          key('a', function(){ sequence += 'a' });
-          key('b', function(){ sequence += 'b' });
-          key('a', 'capital', function(){ sequence += 'A' });
-          key('b', 'capital', function(){ sequence += 'B' });
+        key('a', function(){ sequence += 'a' });
+        key('b', function(){ sequence += 'b' });
+        key('a', 'capital', function(){ sequence += 'A' });
+        key('b', 'capital', function(){ sequence += 'B' });
 
-          keydown(65); keyup(65);
-          keydown(66); keyup(66);
-          key.setScope('capital');
-          keydown(65); keyup(65);
-          keydown(66); keyup(66);
-          key.deleteScope('capital');
-          keydown(65); keyup(65);
-          keydown(66); keyup(66);
+        keydown(65); keyup(65);
+        keydown(66); keyup(66);
+        key.setScope('capital');
+        keydown(65); keyup(65);
+        keydown(66); keyup(66);
+        key.deleteScope('capital');
+        keydown(65); keyup(65);
+        keydown(66); keyup(66);
 
-          t.assertEqual('abaAbBab', sequence);
+        t.assertEqual('abaAbBab', sequence);
       },
 
       testDoesntFireOnUserInputElements: function(t){
         // TODO
       },
-      
+
       testCallsFilterFunction: function(t){
         var oldFilter = key.filter, filterCalls = 0, keyCalls = 0;
-        
+
         key.filter = function(event){
           filterCalls++;
           return false;
         }
-        
+
         key('a', function(){ keyCalls++; });
         keydown(65); keyup(65);
-        
+
         t.assertEqual(1, filterCalls);
         t.assertEqual(0, keyCalls);
-        
-        key.filter = oldFilter;        
+
+        key.filter = oldFilter;
         keydown(65); keyup(65);
-        
+
         t.assertEqual(1, filterCalls);
         t.assertEqual(1, keyCalls);
       }

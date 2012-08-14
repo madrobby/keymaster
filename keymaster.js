@@ -40,7 +40,7 @@
   }
 
   // handle keydown event
-  function dispatch(event){
+  function dispatch(event, scope){
     var key, handler, k, i, modifiersMatch;
     key = event.keyCode;
 
@@ -65,7 +65,7 @@
       handler = _handlers[key][i];
 
       // see if it's in the current scope
-      if(handler.scope == _scope || handler.scope == 'all'){
+      if(handler.scope == scope || handler.scope == 'all'){
         // check if modifiers match if any
         modifiersMatch = handler.mods.length > 0;
         for(k in _mods)
@@ -141,7 +141,7 @@
   for(k in _MODIFIERS) assignKey[k] = false;
 
   // set current scope (default 'all')
-  function setScope(scope){ setTimeout(function(){ _scope = scope || 'all' }, 0) };
+  function setScope(scope){ _scope = scope || 'all' };
   function getScope(){ return _scope || 'all' };
 
   // delete all handlers for a given scope
@@ -166,7 +166,7 @@
   };
 
   // set the handlers globally on document
-  addEvent(document, 'keydown', dispatch);
+  addEvent(document, 'keydown', function(event) { dispatch(event, _scope) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
   addEvent(document, 'keyup', clearModifier);
 
   // reset modifiers to false whenever the window is (re)focused.
