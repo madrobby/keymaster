@@ -28,6 +28,15 @@
       '`': 192, '-': 189, '=': 187,
       ';': 186, '\'': 222,
       '[': 219, ']': 221, '\\': 220
+    },
+    // shift-modified keys to their normal keys
+    _SHIFT = {
+        '!': '1', '@': '2', '#': '3', '$': '4', '%': '5',
+        '^': '6', '&': '7', '*': '8', '(': '9', ')': '0',
+        '~': '`', '_': '-', '+': '=',
+        '{': '[', '}': ']', '|': '\\',
+        ':': ';', '"': '\'',
+        '<': ',', '>': '.', '?': '/'
     };
 
   for(k=1;k<20;k++) _MODIFIERS['f'+k] = 111+k;
@@ -81,7 +90,7 @@
           }
         }
       }
-	}
+    }
   };
 
   // unset modifier keys on keyup
@@ -101,7 +110,7 @@
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys, mods, i, mi;
+    var keys, mods, i, mi, v;
     if (method === undefined) {
       method = scope;
       scope = 'all';
@@ -113,9 +122,12 @@
       keys[keys.length-2] += ',';
     // for each shortcut
     for (i = 0; i < keys.length; i++) {
-      // set modifier keys if any
       mods = [];
       key = keys[i].split('+');
+      // expand shift-glyphs like $ to shift+4
+      if (key[key.length-1] in _SHIFT)
+        key.splice(key.length-1, 1, 'shift', _SHIFT[key[key.length-1]]);
+      // set modifier keys if any
       if(key.length > 1){
         mods = key.slice(0,key.length-1);
         for (mi = 0; mi < mods.length; mi++)
