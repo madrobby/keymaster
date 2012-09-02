@@ -58,6 +58,11 @@ The following special keys can be used for shortcuts:
 `up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`
 and `f1` through `f19`.
 
+In addition, shift-modified glyphs, like `$`, will be automatically translated
+into their canonical form (in this case, `shift+4`). They are:
+`~`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `(`, `)`, `_`, `+`,
+`{`, `}`, `|`, `:`, `"`, `<`, `>`, `?`
+
 ## Modifier key queries
 
 At any point in time (even in code other than key shortcut handlers),
