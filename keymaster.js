@@ -124,7 +124,7 @@
       key = _MAP[key] || key.toUpperCase().charCodeAt(0);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      _handlers[key].push({ shortcut: keys[i], key: keys[i], scope: scope, method: method, mods: mods });
     }
   };
 
