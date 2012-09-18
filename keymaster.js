@@ -135,7 +135,7 @@
   }
 
   // initialize key.<modifier> to false
-  for(k in _MODIFIERS) assignKey[k] = false;
+  resetModifiers();
 
   // set current scope (default 'all')
   function setScope(scope){ _scope = scope || 'all' };
