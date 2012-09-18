@@ -101,7 +101,7 @@
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys, mods, i, mi;
+    var keys, mods, i, mi, ml;
     if (method === undefined) {
       method = scope;
       scope = 'all';
@@ -114,16 +114,13 @@
     // for each shortcut
     for (i = 0; i < keys.length; i++) {
       // set modifier keys if any
-      mods = [];
-      key = keys[i].split('+');
-      if(key.length > 1){
-        mods = key.slice(0,key.length-1);
-        for (mi = 0; mi < mods.length; mi++)
+      mods = keys[i].split('+');
+      key = mods.pop();
+      if(ml = mods.length){
+        for (mi = 0; mi < ml; mi++)
           mods[mi] = _MODIFIERS[mods[mi]];
-        key = [key[key.length-1]];
       }
       // convert to keycode and...
-      key = key[0]
       key = _MAP[key] || key.toUpperCase().charCodeAt(0);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
