@@ -31,6 +31,28 @@
   </p>
 
   <script>
+    key('q', 'a,b', function() {
+      console.log('q in either a or b scope');
+    });
+    key('a', function() {
+      if(key.getScope() == 'a') {
+        key.setScope('all');
+        console.log('scope is no longer a');
+      } else {
+        key.setScope('a');
+        console.log('scope is a');
+      }
+    });
+    key('b', function() {
+      if(key.getScope() == 'b') {
+        key.setScope('all');
+        console.log('scope is no longer b');
+      } else {
+        key.setScope('b');
+        console.log('scope is b');
+      }
+    });
+
     key('c', 'issues', function(){
      console.log('c/issues');
     });
