@@ -101,7 +101,7 @@
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys, mods, i, mi;
+    var keys, mods, i, mi, scopes;
     if (method === undefined) {
       method = scope;
       scope = 'all';
@@ -127,7 +127,11 @@
       key = _MAP[key] || key.toUpperCase().charCodeAt(0);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      scopes = scope.replace(/\s/g,'').split(',');
+      for(j = 0; j < scopes.length; j++) {
+        scope = scopes[j];
+        _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      }
     }
   };
 

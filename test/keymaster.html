@@ -184,6 +184,18 @@
         key.setScope('all');
 
         t.assertEqual('ab', sequence);
+
+        // it should allow binding the same key/callback to two scopes
+        var sequence = '';
+
+        key('d', 'a, b', function() { sequence += 'a'; });
+
+        key.setScope('a');
+        keydown(68); keyup(68);
+        key.setScope('b');
+        keydown(68); keyup(68);
+
+        t.assertEqual('aa', sequence);
       },
 
       testDeleteScope: function(t){
