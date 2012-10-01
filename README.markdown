@@ -85,7 +85,7 @@ key.setScope('issues'); // default scope is 'all'
 
 ## Filter key presses 
 
-By default, when a `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster doesn't process any shortcuts.
+By default, when an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster doesn't process any shortcuts.
 
 You can change this by overwriting `key.filter` with a new function. This function is called before
 Keymaster processes shortcuts, with the keydown event as argument.
