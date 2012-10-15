@@ -229,6 +229,17 @@
 
         t.assertEqual(1, filterCalls);
         t.assertEqual(1, keyCalls);
+      },
+      testNoConflict: function(t) {
+        var k = key.noConflict();
+        t.assertEqual(undefined, window.key);
+        var called = false;
+        k('a', function() {
+          called = true;
+        });
+        keydown(65); keyup(65);        
+        t.assertEqual(called, true);
+        window.key = k;
       }
     });
   </script>
