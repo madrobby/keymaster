@@ -156,7 +156,7 @@
       }
     }
   };
-
+  
   // cross-browser events
   function addEvent(object, event, method) {
     if (object.addEventListener)
@@ -172,12 +172,23 @@
   // reset modifiers to false whenever the window is (re)focused.
   addEvent(window, 'focus', resetModifiers);
 
+  // store previously defined key
+  var previousKey = global.key;
+  
+  // restore previously defined key and return reference to our key object
+  function noConflict() {
+    var k = global.key;
+    global.key = previousKey;
+    return k;
+  }
+
   // set window.key and window.key.set/get/deleteScope, and the default filter
   global.key = assignKey;
   global.key.setScope = setScope;
   global.key.getScope = getScope;
   global.key.deleteScope = deleteScope;
   global.key.filter = filter;
+  global.key.noConflict = noConflict;
 
   if(typeof module !== 'undefined') module.exports = key;
 
