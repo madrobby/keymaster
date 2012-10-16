@@ -173,12 +173,13 @@
   addEvent(window, 'focus', resetModifiers);
 
   // set window.key and window.key.set/get/deleteScope, and the default filter
-  global.key = assignKey;
-  global.key.setScope = setScope;
-  global.key.getScope = getScope;
-  global.key.deleteScope = deleteScope;
-  global.key.filter = filter;
+  var _key = assignKey;
+  _key.setScope = setScope;
+  _key.getScope = getScope;
+  _key.deleteScope = deleteScope;
+  _key.filter = filter;
 
-  if(typeof module !== 'undefined') module.exports = key;
+  global.key = _key;
+  if(typeof module !== 'undefined') module.exports = _key;
 
 })(this);
