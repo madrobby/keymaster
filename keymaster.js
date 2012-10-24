@@ -28,7 +28,8 @@
       '`': 192, '-': 189, '=': 187,
       ';': 186, '\'': 222,
       '[': 219, ']': 221, '\\': 220
-    };
+    },
+    _downKeys = [];
 
   for(k=1;k<20;k++) _MODIFIERS['f'+k] = 111+k;
 
@@ -43,6 +44,10 @@
   function dispatch(event, scope){
     var key, handler, k, i, modifiersMatch;
     key = event.keyCode;
+    
+    if (index(_downKeys, key) == -1) {
+        _downKeys.push(key);
+    }
 
     // if a modifier key, set the key.<modifierkeyname> property to true and return
     if(key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
@@ -86,7 +91,14 @@
 
   // unset modifier keys on keyup
   function clearModifier(event){
-    var key = event.keyCode, k;
+    var key = event.keyCode, k,
+        i = index(_downKeys, key);
+    
+    // remove key from _downKeys
+    if (i >= 0) {
+        _downKeys.splice(i, 1);
+    }
+    
     if(key == 93 || key == 224) key = 91;
     if(key in _mods) {
       _mods[key] = false;
@@ -130,6 +142,23 @@
       _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
     }
   };
+  
+  // Returns true if the key with code 'keyCode' is currently down
+  // Converts strings into key codes.
+  function isPressed(keyCode) {
+      if (typeof(keyCode)=='string') {
+          if (keyCode.length == 1) {
+              keyCode = (keyCode.toUpperCase()).charCodeAt(0);  
+          } else {  
+              return false; 
+          }
+      }
+      return index(_downKeys, keyCode) != -1;
+  }
+  
+  function getPressedKeyCodes() {
+      return _downKeys;
+  }
 
   function filter(event){
     var tagName = (event.target || event.srcElement).tagName;
@@ -178,6 +207,8 @@
   global.key.getScope = getScope;
   global.key.deleteScope = deleteScope;
   global.key.filter = filter;
+  global.key.isPressed = isPressed;
+  global.key.getPressedKeyCodes = getPressedKeyCodes;
 
   if(typeof module !== 'undefined') module.exports = key;
 
