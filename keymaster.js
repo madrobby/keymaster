@@ -179,6 +179,6 @@
   global.key.deleteScope = deleteScope;
   global.key.filter = filter;
 
-  if(typeof module !== 'undefined') module.exports = key;
+  if(typeof module !== 'undefined') module.exports = global.key;
 
 })(this);
