@@ -229,6 +229,24 @@
 
         t.assertEqual(1, filterCalls);
         t.assertEqual(1, keyCalls);
+      },
+      
+      testIsPressed: function (t) {
+        keydown(65);
+        t.assertTrue(key.isPressed(65));
+        t.assertTrue(key.isPressed("a"));
+        keyup(65);
+          
+        keydown(66); keyup(66);
+        t.assertFalse(key.isPressed(66));          
+      },
+      
+      testGetPressedKeyCodes: function (t) {
+        keydown(65); keydown(KEYS.shift);
+        var pressedKeys = key.getPressedKeyCodes();
+        t.assertTrue(pressedKeys.indexOf(65) >= 0);
+        t.assertTrue(pressedKeys.indexOf(16) >= 0);
+        keyup(65); keyup(KEYS.shift);
       }
     });
   </script>
