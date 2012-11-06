@@ -61,13 +61,31 @@ and `f1` through `f19`.
 ## Modifier key queries
 
 At any point in time (even in code other than key shortcut handlers),
-you can query the `key` object for the state of modifier keys. This
+you can query the `key` object for the state of any keys. This
 allows easy implementation of things like shift+click handlers. For example,
 `key.shift` is `true` if the shift key is currently pressed.
 
 ```javascript
 if(key.shift) alert('shift is pressed, OMGZ!');
 ```
+
+## Other key queries
+
+At any point in time (even in code other than key shortcut handlers),
+you can query the `key` object for the state of any key. This
+is very helpful for game development using a game loop. For example,
+`key.isDown(77)` is `true` if the M key is currently pressed.
+
+```javascript
+if(key.isDown("M")) alert('M key is pressed, can ya believe it!?');
+if(key.isDown(77)) alert('M key is pressed, can ya believe it!?');
+```
+
+You can also get these as an array using...
+```javascript
+key.getPressedKeyCodes() // returns an array of key codes currently pressed
+```
+
 
 ## Scopes
 
