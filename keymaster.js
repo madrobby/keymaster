@@ -144,6 +144,24 @@
   function setScope(scope){ _scope = scope || 'all' };
   function getScope(){ return _scope || 'all' };
 
+  // unbind all handlers for given key in current scope
+  function unbindKey(key, scope) {
+    key = _MAP[key] || key.toUpperCase().charCodeAt(0);
+    if (scope === undefined) {
+      scope = getScope();
+    }
+    if (!_handlers[key]) {
+      return;
+    }
+    var i;
+    for (i in _handlers[key]) {
+      obj = _handlers[key][i];
+      if (obj.scope === scope) {
+        _handlers[key][i] = {};
+      }
+    }
+  }
+
   // delete all handlers for a given scope
   function deleteScope(scope){
     var key, handlers, i;
@@ -178,6 +196,7 @@
   global.key.getScope = getScope;
   global.key.deleteScope = deleteScope;
   global.key.filter = filter;
+  global.key.unbind = unbindKey;
 
   if(typeof module !== 'undefined') module.exports = key;
 
