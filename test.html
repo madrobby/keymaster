@@ -20,6 +20,8 @@
     <li>Press 'i'. Switches scope to 'issues'.</li>
     <li>Press 'c'. Console should log function call.</li>
     <li>Press 'o' or Enter or Cursor &larr;. Console should log function call.</li>
+    <li>Press and hold 'm'. Console should log a message every second.</li>
+    <li>Every second console should log a message listing all the currently pressed keycodes.</li>
   </ol>
 
   <p>
@@ -75,6 +77,13 @@
 
     key('/', function(){ console.log('/') });
     key('shift+]', function(){ console.log('shift+]') });
+
+    setInterval(function () { 
+        console.log('All keys currently down: ' + key.getPressedKeyCodes());
+        if (key.isPressed(77)) {
+            console.log('M key is currently down');
+        }
+    }, 1000);
 
     // document.onkeydown = function(event){
     //  console.log(event.keyCode);
