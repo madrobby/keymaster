@@ -123,6 +123,18 @@ If you only want _some_ shortcuts to work while in a input element, you change t
 key.filter function; however a more robust way to handle this is to use proper
 focus and blur event handlers on your input element, and change scopes there as you see fit.
 
+## noConflict mode
+
+You can call ```key.noConflict``` to remove the ```key``` function from global scope and restore whatever ```key``` was defined to before Keymaster was loaded. Calling ```key.noConflict``` will return the Keymaster ```key``` function.
+
+```javascript
+var k = key.noConflict();
+k('a', function() { /* ... */ });
+
+key()
+// --> TypeError: 'undefined' is not a function
+```
+
 ## Notes
 
 Keymaster should work with any browser that fires `keyup` and `keydown` events,
