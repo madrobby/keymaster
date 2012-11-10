@@ -170,5 +170,5 @@ submit a pull request.
 
 * Finish test suite
 
-Keymaster is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
+Keymaster is (c) 2011-2012 Thomas Fuchs and may be freely distributed under the MIT license.
 See the `MIT-LICENSE` file.
