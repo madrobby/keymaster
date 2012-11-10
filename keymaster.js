@@ -19,11 +19,11 @@
       backspace: 8, tab: 9, clear: 12,
       enter: 13, 'return': 13,
       esc: 27, escape: 27, space: 32,
+      pageup: 33, pagedown: 34,
+      end: 35, home: 36,
       left: 37, up: 38,
       right: 39, down: 40,
       del: 46, 'delete': 46,
-      home: 36, end: 35,
-      pageup: 33, pagedown: 34,
       ',': 188, '.': 190, '/': 191,
       '`': 192, '-': 189, '=': 187,
       ';': 186, '\'': 222,
@@ -113,7 +113,7 @@
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys, mods, i, mi;
+    var keys, mods, i, mi, ml;
     if (method === undefined) {
       method = scope;
       scope = 'all';
@@ -126,20 +126,17 @@
     // for each shortcut
     for (i = 0; i < keys.length; i++) {
       // set modifier keys if any
-      mods = [];
-      key = keys[i].split('+');
-      if(key.length > 1){
-        mods = key.slice(0,key.length-1);
-        for (mi = 0; mi < mods.length; mi++)
+      mods = keys[i].split('+');
+      key = mods.pop();
+      if(ml = mods.length){
+        for (mi = 0; mi < ml; mi++)
           mods[mi] = _MODIFIERS[mods[mi]];
-        key = [key[key.length-1]];
       }
       // convert to keycode and...
-      key = key[0]
       key = _MAP[key] || key.toUpperCase().charCodeAt(0);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      _handlers[key].push({ shortcut: keys[i], key: keys[i], scope: scope, method: method, mods: mods });
     }
   };
 
@@ -167,7 +164,7 @@
   }
 
   // initialize key.<modifier> to false
-  for(k in _MODIFIERS) assignKey[k] = false;
+  resetModifiers();
 
   // set current scope (default 'all')
   function setScope(scope){ _scope = scope || 'all' };
