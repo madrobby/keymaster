@@ -58,7 +58,7 @@
       return;
     }
 
-    // see if we need to ignore the keypress (ftiler() can can be overridden)
+    // see if we need to ignore the keypress (filter() can can be overridden)
     // by default ignore key presses if a select, textarea, or input is focused
     if(!assignKey.filter.call(this, event)) return;
 
@@ -86,7 +86,7 @@
           }
         }
       }
-	}
+    }
   };
 
   // unset modifier keys on keyup
