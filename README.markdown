@@ -74,11 +74,11 @@ if(key.shift) alert('shift is pressed, OMGZ!');
 At any point in time (even in code other than key shortcut handlers),
 you can query the `key` object for the state of any key. This
 is very helpful for game development using a game loop. For example,
-`key.isDown(77)` is `true` if the M key is currently pressed.
+`key.isPressed(77)` is `true` if the M key is currently pressed.
 
 ```javascript
-if(key.isDown("M")) alert('M key is pressed, can ya believe it!?');
-if(key.isDown(77)) alert('M key is pressed, can ya believe it!?');
+if(key.isPressed("M")) alert('M key is pressed, can ya believe it!?');
+if(key.isPressed(77)) alert('M key is pressed, can ya believe it!?');
 ```
 
 You can also get these as an array using...
