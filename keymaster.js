@@ -58,7 +58,7 @@
       return;
     }
 
-    // see if we need to ignore the keypress (filter() can can be overridden)
+    // see if we need to ignore the keypress (filter() can be overridden)
     // by default ignore key presses if a select, textarea, or input is focused
     if(!assignKey.filter.call(this, event)) return;
 
@@ -86,7 +86,7 @@
           }
         }
       }
-    }
+  }
   };
 
   // unset modifier keys on keyup
@@ -104,7 +104,7 @@
       _mods[key] = false;
       for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
     }
-  };
+  }
 
   function resetModifiers() {
     for(k in _mods) _mods[k] = false;
@@ -173,6 +173,24 @@
   function setScope(scope){ _scope = scope || 'all' };
   function getScope(){ return _scope || 'all' };
 
+  // unbind all handlers for given key in current scope
+  function unbindKey(key, scope) {
+    key = _MAP[key] || key.toUpperCase().charCodeAt(0);
+    if (scope === undefined) {
+      scope = getScope();
+    }
+    if (!_handlers[key]) {
+      return;
+    }
+    var i;
+    for (i in _handlers[key]) {
+      obj = _handlers[key][i];
+      if (obj.scope === scope) {
+        _handlers[key][i] = {};
+      }
+    }
+  }
+
   // delete all handlers for a given scope
   function deleteScope(scope){
     var key, handlers, i;
@@ -217,6 +235,7 @@
   global.key.getScope = getScope;
   global.key.deleteScope = deleteScope;
   global.key.filter = filter;
+  global.key.unbind = unbindKey;
   global.key.isPressed = isPressed;
   global.key.getPressedKeyCodes = getPressedKeyCodes;
   global.key.noConflict = noConflict;
