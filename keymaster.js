@@ -157,7 +157,7 @@
   }
 
   function getPressedKeyCodes() {
-      return _downKeys;
+      return _downKeys.slice(0);
   }
 
   function filter(event){
