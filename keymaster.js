@@ -31,7 +31,7 @@
     },
     _downKeys = [];
 
-  for(k=1;k<20;k++) _MODIFIERS['f'+k] = 111+k;
+  for(k=1;k<20;k++) _MAP['f'+k] = 111+k;
 
   // IE doesn't support Array#indexOf, so have a simple replacement
   function index(array, item){
@@ -222,5 +222,10 @@
   global.key.noConflict = noConflict;
 
   if(typeof module !== 'undefined') module.exports = key;
+  if(typeof define === 'function') {
+    define(function() {
+      return key;
+    });
+  }
 
 })(this);
