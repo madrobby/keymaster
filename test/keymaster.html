@@ -244,8 +244,10 @@
       testGetPressedKeyCodes: function (t) {
         keydown(65); keydown(KEYS.shift);
         var pressedKeys = key.getPressedKeyCodes();
+        var otherKeys = key.getPressedKeyCodes();
         t.assertTrue(pressedKeys.indexOf(65) >= 0);
         t.assertTrue(pressedKeys.indexOf(16) >= 0);
+        t.assertTrue(pressedKeys != otherKeys);
         keyup(65); keyup(KEYS.shift);
       },
 
