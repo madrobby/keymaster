@@ -174,9 +174,10 @@
   function getScope(){ return _scope || 'all'; }
 
   // unbind all handlers for given key in current scope
-  function unbindKey(key, scope) {
+  function unbindKey(key, scope, method) {
     key = _MAP[key] || key.toUpperCase().charCodeAt(0);
-    if (scope === undefined) {
+    if (typeof scope !== 'string') {
+      method = scope;
       scope = getScope();
     }
     if (!_handlers[key]) {
@@ -186,7 +187,9 @@
     for (i in _handlers[key]) {
       obj = _handlers[key][i];
       if (obj.scope === scope) {
-        _handlers[key][i] = {};
+        if (!method || obj.method === method) {
+          _handlers[key][i] = {};
+        }
       }
     }
   }

@@ -232,6 +232,62 @@
         t.assertEqual(cntForScope2, 1);
       },
 
+      testUnbindKeyUnscopedWithMethod: function(t) {
+        key.setScope('all');
+        var cntForMethod1 = 0;
+        var cntForMethod2 = 0;
+        var method1 = function() { cntForMethod1++; }
+        var method2 = function() { cntForMethod2++; }
+
+        key('a', method1);
+        key('a', method2);
+        
+        // verify key is bound
+        keydown(65); keyup(65);
+
+        // verify key is bound
+        t.assertEqual(cntForMethod1, 1);
+        t.assertEqual(cntForMethod2, 1);
+
+        // verify unbind just unbinds the correct method
+        key.unbind('a', method1);
+        keydown(65); keyup(65);
+        t.assertEqual(cntForMethod1, 1);
+        t.assertEqual(cntForMethod2, 2);
+      },
+
+      testUnbindKeyScopedWithMethod: function(t){
+        key.setScope('all');
+        var cntForMethod1 = 0;
+        var cntForMethod2 = 0;
+        var method1 = function() { cntForMethod1++; }
+        var method2 = function() { cntForMethod2++; }
+
+        key('a', 'scope1', method1);
+        key('a', 'scope1', method2);
+        
+        // verify key is bound
+        key.setScope('scope1');
+        keydown(65); keyup(65);
+
+        // verify key is bound
+        t.assertEqual(cntForMethod1, 1);
+        t.assertEqual(cntForMethod2, 1);
+
+        // verify scope is set
+        key.setScope('scope2');
+        keydown(65); keyup(65);
+        t.assertEqual(cntForMethod1, 1);
+        t.assertEqual(cntForMethod2, 1);
+
+        // verify unbind just unbinds the correct method
+        key.unbind('a', 'scope1', method1);
+        key.setScope('scope1')
+        keydown(65); keyup(65);
+        t.assertEqual(cntForMethod1, 1);
+        t.assertEqual(cntForMethod2, 2);
+      },
+
       testDeleteScope: function(t){
         var sequence = '';
 
