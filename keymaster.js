@@ -58,7 +58,7 @@
       return;
     }
 
-    // see if we need to ignore the keypress (filter() can can be overridden)
+    // see if we need to ignore the keypress (filter() can be overridden)
     // by default ignore key presses if a select, textarea, or input is focused
     if(!assignKey.filter.call(this, event)) return;
 
@@ -77,7 +77,7 @@
           if((!_mods[k] && index(handler.mods, +k) > -1) ||
             (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
         // call the handler and stop the event if neccessary
-        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
+        if((handler.mods.length === 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
           if(handler.method(event, handler)===false){
             if(event.preventDefault) event.preventDefault();
               else event.returnValue = false;
@@ -87,7 +87,7 @@
         }
       }
     }
-  };
+  }
 
   // unset modifier keys on keyup
   function clearModifier(event){
@@ -104,11 +104,11 @@
       _mods[key] = false;
       for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
     }
-  };
+  }
 
   function resetModifiers() {
-    for(k in _mods) _mods[k] = false;
-    for(k in _MODIFIERS) assignKey[k] = false;
+    for(var k in _mods) _mods[k] = false;
+    for(var j in _MODIFIERS) assignKey[k] = false;
   }
 
   // parse and assign shortcut
@@ -121,7 +121,7 @@
     key = key.replace(/\s/g,'');
     keys = key.split(',');
 
-    if((keys[keys.length-1])=='')
+    if((keys[keys.length-1])==='')
       keys[keys.length-2] += ',';
     // for each shortcut
     for (i = 0; i < keys.length; i++) {
@@ -135,13 +135,13 @@
         key = [key[key.length-1]];
       }
       // convert to keycode and...
-      key = key[0]
+      key = key[0];
       key = _MAP[key] || key.toUpperCase().charCodeAt(0);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
       _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
     }
-  };
+  }
 
   // Returns true if the key with code 'keyCode' is currently down
   // Converts strings into key codes.
@@ -170,8 +170,29 @@
   for(k in _MODIFIERS) assignKey[k] = false;
 
   // set current scope (default 'all')
-  function setScope(scope){ _scope = scope || 'all' };
-  function getScope(){ return _scope || 'all' };
+  function setScope(scope){ _scope = scope || 'all'; }
+  function getScope(){ return _scope || 'all'; }
+
+  // unbind all handlers for given key in current scope
+  function unbindKey(key, scope, method) {
+    key = _MAP[key] || key.toUpperCase().charCodeAt(0);
+    if (typeof scope !== 'string') {
+      method = scope;
+      scope = getScope();
+    }
+    if (!_handlers[key]) {
+      return;
+    }
+    var i;
+    for (i in _handlers[key]) {
+      obj = _handlers[key][i];
+      if (obj.scope === scope) {
+        if (!method || obj.method === method) {
+          _handlers[key][i] = {};
+        }
+      }
+    }
+  }
 
   // delete all handlers for a given scope
   function deleteScope(scope){
@@ -184,18 +205,18 @@
         else i++;
       }
     }
-  };
+  }
 
   // cross-browser events
   function addEvent(object, event, method) {
     if (object.addEventListener)
       object.addEventListener(event, method, false);
     else if(object.attachEvent)
-      object.attachEvent('on'+event, function(){ method(window.event) });
-  };
+      object.attachEvent('on'+event, function(){ method(window.event); });
+  }
 
   // set the handlers globally on document
-  addEvent(document, 'keydown', function(event) { dispatch(event, _scope) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
+  addEvent(document, 'keydown', function(event) { dispatch(event, _scope); }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
   addEvent(document, 'keyup', clearModifier);
 
   // reset modifiers to false whenever the window is (re)focused.
@@ -217,6 +238,7 @@
   global.key.getScope = getScope;
   global.key.deleteScope = deleteScope;
   global.key.filter = filter;
+  global.key.unbind = unbindKey;
   global.key.isPressed = isPressed;
   global.key.getPressedKeyCodes = getPressedKeyCodes;
   global.key.noConflict = noConflict;
