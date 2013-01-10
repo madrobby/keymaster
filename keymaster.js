@@ -221,6 +221,9 @@
   global.key.getPressedKeyCodes = getPressedKeyCodes;
   global.key.noConflict = noConflict;
 
-  if(typeof module !== 'undefined') module.exports = key;
+  if(typeof module !== 'undefined') {
+    module.exports = key;
+    noConflict();
+  }
 
 })(this);
