@@ -239,6 +239,10 @@
 
         keydown(66); keyup(66);
         t.assertFalse(key.isPressed(66));
+
+        keydown(38);
+        t.assertTrue(key.isPressed("up"));
+        keyup(38);
       },
 
       testGetPressedKeyCodes: function (t) {
