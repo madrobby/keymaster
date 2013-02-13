@@ -21,14 +21,23 @@
       return document.getElementById(id);
     }
 
+    var modifierMap = {
+      16:'shiftKey',
+      18:'altKey',
+      17:'ctrlKey',
+      91:'metaKey'
+    };
+
     // because the DOM is retarded,
     // and browsers don't really care about the DOM API anyway
     // (IE, Firefox, WebKit are all using different event generators),
     // we'll just simulate events roughly
-    function keydown(code, el){
+    function keydown(code, modifiers, el){
       var event = document.createEvent('Event');
       event.initEvent('keydown', true, true);
       event.keyCode = code;
+      if (modifiers && modifiers.length > 0)
+          for(i in modifiers) event[modifierMap[modifiers[i]]] = true;
       (el||document).dispatchEvent(event);
     }
 
@@ -73,14 +82,14 @@
         t.assertEqual(0, cntCommandCtrlShiftA);
         t.assertEqual(0, cntCommandCtrlAltShiftA);
 
-        keydown(KEYS.shift); keydown(65); keyup(65); keyup(KEYS.shift);
+        keydown(KEYS.shift); keydown(65, [16]); keyup(65); keyup(KEYS.shift);
         t.assertEqual(1, cntA);
         t.assertEqual(1, cntShiftA);
         t.assertEqual(0, cntCtrlShiftA);
         t.assertEqual(0, cntCommandCtrlShiftA);
         t.assertEqual(0, cntCommandCtrlAltShiftA);
 
-        keydown(KEYS.shift); keydown(KEYS.ctrl); keydown(65); keyup(65); keyup(KEYS.shift); keyup(KEYS.ctrl);
+        keydown(KEYS.shift); keydown(KEYS.ctrl); keydown(65, [16, 17]); keyup(65); keyup(KEYS.shift); keyup(KEYS.ctrl);
         t.assertEqual(1, cntA);
         t.assertEqual(1, cntShiftA);
         t.assertEqual(1, cntCtrlShiftA);
@@ -88,7 +97,7 @@
         t.assertEqual(0, cntCommandCtrlAltShiftA);
 
         keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
-        keydown(65); keyup(65);
+        keydown(65, [91, 16, 17]); keyup(65);
         keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command);
         t.assertEqual(1, cntA);
         t.assertEqual(1, cntShiftA);
@@ -97,7 +106,7 @@
         t.assertEqual(0, cntCommandCtrlAltShiftA);
 
         keydown(KEYS.alt); keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
-        keydown(65); keyup(65);
+        keydown(65, [18, 91, 16, 17]); keyup(65);
         keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command); keyup(KEYS.alt);
         t.assertEqual(1, cntA);
         t.assertEqual(1, cntShiftA);
@@ -113,10 +122,10 @@
         key('⇧+c', function(){ sequence += 'c' });
         key('⌘+d', function(){ sequence += 'd' });
 
-        keydown(KEYS.ctrl); keydown(65); keyup(65); keyup(KEYS.ctrl);
-        keydown(KEYS.option); keydown(66); keyup(66); keyup(KEYS.option);
-        keydown(KEYS.shift); keydown(67); keyup(67); keyup(KEYS.shift);
-        keydown(KEYS.command); keydown(68); keyup(68); keyup(KEYS.command);
+        keydown(KEYS.ctrl); keydown(65, [17]); keyup(65); keyup(KEYS.ctrl);
+        keydown(KEYS.option); keydown(66, [18]); keyup(66); keyup(KEYS.option);
+        keydown(KEYS.shift); keydown(67, [16]); keyup(67); keyup(KEYS.shift);
+        keydown(KEYS.command); keydown(68, [91]); keyup(68); keyup(KEYS.command);
 
         t.assertEqual('abcd', sequence);
       },
