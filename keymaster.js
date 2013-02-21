@@ -125,9 +125,40 @@
     for(k in _MODIFIERS) assignKey[k] = false;
   }
 
-  // parse and assign shortcut
-  function assignKey(key, scope, method){
-    var keys, mods, i, mi;
+  function storeKey(keyCode, key, mods, scope, method) {
+    if (!(keyCode in _handlers)) _handlers[keyCode] = [];
+    _handlers[keyCode].push({ shortcut: key, scope: scope, method: method, key: key, mods: mods });
+  }
+
+  function createKeyEvent(keyCode, mods, view, type) {
+    var i;
+    var keyboardEvent = document.createEventObject ?  document.createEventObject() : document.createEvent("Events");
+    keyboardEvent.initEvent(type, true, true);
+    keyboardEvent.view = view;
+    keyboardEvent.keyCode = keyCode;
+    keyboardEvent.which = keyCode;
+
+    for(i = 0; i < mods.length; i++) {
+       keyboardEvent[modifierMap[mods[i]]] = true;
+    }
+     
+    return keyboardEvent;
+  }
+
+  function dispatchKey(keyCode, key, mods, view, element) {
+    var keyboardEvent;
+    view = view === 'all' ? window : view;   
+    keyboardEvent = createKeyEvent(keyCode, mods, view, 'keydown');
+    element.dispatchEvent(keyboardEvent); 
+    keyboardEvent = createKeyEvent(keyCode, mods, view, 'keypress');
+    element.dispatchEvent(keyboardEvent);    
+    keyboardEvent = createKeyEvent(keyCode, mods, view, 'keyup');
+    element.dispatchEvent(keyboardEvent); 
+  }
+
+  // parse and assign shortcut or dispatch keyEvent
+  function assignKey(key, scope, method) {
+    var keys, mods, i, mi, keyCode;
     if (method === undefined) {
       method = scope;
       scope = 'all';
@@ -148,13 +179,12 @@
           mods[mi] = _MODIFIERS[mods[mi]];
         key = [key[key.length-1]];
       }
-      // convert to keycode and...
-      key = key[0]
-      key = code(key);
-      // ...store handler
-      if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
-    }
+      keyCode = code(key[0]);
+      if (typeof method === 'function') // ...store handler
+        storeKey(keyCode, keys[i], mods, scope, method);
+      else                                             //  ... dispatch event
+        dispatchKey(keyCode, keys[i], mods, scope, method);
+    }  
   };
 
   // Returns true if the key with code 'keyCode' is currently down
