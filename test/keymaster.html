@@ -147,6 +147,20 @@
         t.assertEqual(',./`-=;\'[]\\', sequence);
       },
 
+      testFKeys: function(t) {
+        var sequence = '';
+        for(var i=1;i<=19;i++) {
+          key('f' + i , function(){ sequence += '' + i });
+        }
+
+        for(var i=1;i<=19;i++) {
+          keydown(111 + i);
+          keyup(111 + i);
+        }
+
+        t.assertEqual('12345678910111213141516171819', sequence);
+      },
+
       testNamedSpecialKeys: function(t){
         // TODO
       },
