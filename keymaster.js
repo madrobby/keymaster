@@ -232,5 +232,10 @@
   global.key.noConflict = noConflict;
 
   if(typeof module !== 'undefined') module.exports = key;
+  if(typeof define === 'function') {
+    define(function() {
+      return key;
+    });
+  }
 
 })(this);
