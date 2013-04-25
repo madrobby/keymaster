@@ -43,6 +43,15 @@
     return -1;
   }
 
+  // for comparing mods before unassignment
+  function compareArray(a1, a2) {
+    if (a1.length != a2.length) return false;
+    for (var i = 0; i < a1.length; i++) {
+        if (a1[i] !== a2[i]) return false;
+    }
+    return true;
+  }
+
   var modifierMap = {
       16:'shiftKey',
       18:'altKey',
@@ -123,29 +132,24 @@
   function resetModifiers() {
     for(k in _mods) _mods[k] = false;
     for(k in _MODIFIERS) assignKey[k] = false;
-  }
+  };
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
     var keys, mods, i, mi;
+    keys = getKeys(key);
     if (method === undefined) {
       method = scope;
       scope = 'all';
     }
-    key = key.replace(/\s/g,'');
-    keys = key.split(',');
 
-    if((keys[keys.length-1])=='')
-      keys[keys.length-2] += ',';
     // for each shortcut
     for (i = 0; i < keys.length; i++) {
       // set modifier keys if any
       mods = [];
       key = keys[i].split('+');
-      if(key.length > 1){
-        mods = key.slice(0,key.length-1);
-        for (mi = 0; mi < mods.length; mi++)
-          mods[mi] = _MODIFIERS[mods[mi]];
+      if (key.length > 1){
+        mods = getMods(key);
         key = [key[key.length-1]];
       }
       // convert to keycode and...
@@ -154,6 +158,34 @@
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
       _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+    }
+  };
+
+  // unbind all handlers for given key in current scope
+  function unbindKey(key, scope) {
+    var keys = key.split('+'),
+      mods = [],
+      i, obj;
+
+    if (keys.length > 1) {
+      mods = getMods(keys);
+      key = keys[keys.length - 1];
+    }
+
+    key = code(key);
+
+    if (scope === undefined) {
+      scope = getScope();
+    }
+    if (!_handlers[key]) {
+      return;
+    }
+    for (i in _handlers[key]) {
+      obj = _handlers[key][i];
+      // only clear handlers if correct scope and mods match
+      if (obj.scope === scope && compareArray(obj.mods, mods)) {
+        _handlers[key][i] = {};
+      }
     }
   };
 
@@ -196,6 +228,25 @@
     }
   };
 
+  // abstract key logic for assign and unassign
+  function getKeys(key) {
+    var keys;
+    key = key.replace(/\s/g, '');
+    keys = key.split(',');
+    if ((keys[keys.length - 1]) == '') {
+      keys[keys.length - 2] += ',';
+    }
+    return keys;
+  }
+
+  // abstract mods logic for assign and unassign
+  function getMods(key) {
+    var mods = key.slice(0, key.length - 1);
+    for (mi = 0; mi < mods.length; mi++)
+    mods[mi] = _MODIFIERS[mods[mi]];
+    return mods;
+  }
+
   // cross-browser events
   function addEvent(object, event, method) {
     if (object.addEventListener)
@@ -230,6 +281,7 @@
   global.key.isPressed = isPressed;
   global.key.getPressedKeyCodes = getPressedKeyCodes;
   global.key.noConflict = noConflict;
+  global.key.unbind = unbindKey;
 
   if(typeof module !== 'undefined') module.exports = key;
 
