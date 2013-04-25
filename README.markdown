@@ -135,6 +135,18 @@ key()
 // --> TypeError: 'undefined' is not a function
 ```
 
+## Unbinding shortcuts
+
+```javascript
+// unbind 'a' handler
+key.unbind('a');
+
+// unbind a key only for a single scope
+// when no scope is specified it defaults to the current scope (key.getScope())
+key.unbind('o, enter', 'issues');
+key.unbind('o, enter', 'files');
+```
+
 ## Notes
 
 Keymaster should work with any browser that fires `keyup` and `keydown` events,
