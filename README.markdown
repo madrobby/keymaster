@@ -137,6 +137,8 @@ key()
 
 ## Unbinding shortcuts
 
+Similar to defining shortcuts, they can be unbound using `key.unbind`.
+
 ```javascript
 // unbind 'a' handler
 key.unbind('a');
