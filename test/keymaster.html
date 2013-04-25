@@ -67,6 +67,18 @@
         t.assertEqual(2, cnt);
       },
 
+      testUnbind: function(t){
+        var cnt = 0;
+        key('a', function(){ cnt++ });
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cnt);
+        key.unbind('a');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cnt);
+      },
+
       testShortcutWithModifiers: function(t){
         var cntA = 0, cntShiftA = 0, cntCtrlShiftA = 0, cntCommandCtrlShiftA = 0, cntCommandCtrlAltShiftA = 0;
         key('a', function(){ cntA++ });
@@ -108,6 +120,53 @@
         keydown(KEYS.alt); keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
         keydown(65, [18, 91, 16, 17]); keyup(65);
         keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command); keyup(KEYS.alt);
+        t.assertEqual(1, cntA);
+        t.assertEqual(1, cntShiftA);
+        t.assertEqual(1, cntCtrlShiftA);
+        t.assertEqual(1, cntCommandCtrlShiftA);
+        t.assertEqual(1, cntCommandCtrlAltShiftA);
+      },
+
+      testUnbindWithModifiers: function(t){
+        var cntA = 0, cntShiftA = 0, cntCtrlShiftA = 0, cntCommandCtrlShiftA = 0, cntCommandCtrlAltShiftA = 0;
+        key('a', function(){ cntA++ });
+        key('shift+a', function(){ cntShiftA++ });
+        key('ctrl+shift+a', function(){ cntCtrlShiftA++ });
+        key('command+ctrl+shift+a', function(){ cntCommandCtrlShiftA++ });
+        key('command+ctrl+alt+shift+a', function(){ cntCommandCtrlAltShiftA++ });
+
+        keydown(65); keyup(65);
+        keydown(KEYS.shift); keydown(65, [16]); keyup(65); keyup(KEYS.shift);
+        keydown(KEYS.shift); keydown(KEYS.ctrl); keydown(65, [16, 17]); keyup(65); keyup(KEYS.shift); keyup(KEYS.ctrl);
+        keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
+        keydown(65, [91, 16, 17]); keyup(65);
+        keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command);
+        keydown(KEYS.alt); keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
+        keydown(65, [18, 91, 16, 17]); keyup(65);
+        keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command); keyup(KEYS.alt);
+
+        t.assertEqual(1, cntA);
+        t.assertEqual(1, cntShiftA);
+        t.assertEqual(1, cntCtrlShiftA);
+        t.assertEqual(1, cntCommandCtrlShiftA);
+        t.assertEqual(1, cntCommandCtrlAltShiftA);
+
+        key.unbind('a');
+        key.unbind('shift+a');
+        key.unbind('ctrl+shift+a');
+        key.unbind('command+ctrl+shift+a');
+        key.unbind('command+ctrl+alt+shift+a');
+
+        keydown(65); keyup(65);
+        keydown(KEYS.shift); keydown(65, [16]); keyup(65); keyup(KEYS.shift);
+        keydown(KEYS.shift); keydown(KEYS.ctrl); keydown(65, [16, 17]); keyup(65); keyup(KEYS.shift); keyup(KEYS.ctrl);
+        keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
+        keydown(65, [91, 16, 17]); keyup(65);
+        keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command);
+        keydown(KEYS.alt); keydown(KEYS.command); keydown(KEYS.shift); keydown(KEYS.ctrl);
+        keydown(65, [18, 91, 16, 17]); keyup(65);
+        keyup(KEYS.shift); keyup(KEYS.ctrl); keyup(KEYS.command); keyup(KEYS.alt);
+
         t.assertEqual(1, cntA);
         t.assertEqual(1, cntShiftA);
         t.assertEqual(1, cntCtrlShiftA);
@@ -227,6 +286,31 @@
         keydown(66); keyup(66);
 
         t.assertEqual('abaAbBab', sequence);
+      },
+
+      testUnbindWithScope: function(t){
+        var cntIssues = 0, cntFiles = 0;
+        key('a', 'issues', function(){ cntIssues++ });
+        key('a', 'files', function(){ cntFiles++ });
+        
+        key.setScope('issues');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cntIssues);
+        key.unbind('a', 'issues');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cntIssues);
+        
+        key.setScope('files');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cntFiles);
+        key.unbind('a', 'files');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cntFiles);
+        t.assertEqual(1, cntIssues);
       },
 
       testDoesntFireOnUserInputElements: function(t){
