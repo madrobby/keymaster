@@ -288,6 +288,31 @@
         t.assertEqual('abaAbBab', sequence);
       },
 
+      testUnbindWithScope: function(t){
+        var cntIssues = 0, cntFiles = 0;
+        key('a', 'issues', function(){ cntIssues++ });
+        key('a', 'files', function(){ cntFiles++ });
+        
+        key.setScope('issues');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cntIssues);
+        key.unbind('a', 'issues');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cntIssues);
+        
+        key.setScope('files');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cntFiles);
+        key.unbind('a', 'files');
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, cntFiles);
+        t.assertEqual(1, cntIssues);
+      },
+
       testDoesntFireOnUserInputElements: function(t){
         // TODO
       },
