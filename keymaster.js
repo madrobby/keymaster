@@ -136,7 +136,7 @@
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys, mods, i, mi;
+    var keys, mods;
     keys = getKeys(key);
     if (method === undefined) {
       method = scope;
@@ -144,7 +144,7 @@
     }
 
     // for each shortcut
-    for (i = 0; i < keys.length; i++) {
+    for (var i = 0; i < keys.length; i++) {
       // set modifier keys if any
       mods = [];
       key = keys[i].split('+');
@@ -242,7 +242,7 @@
   // abstract mods logic for assign and unassign
   function getMods(key) {
     var mods = key.slice(0, key.length - 1);
-    for (mi = 0; mi < mods.length; mi++)
+    for (var mi = 0; mi < mods.length; mi++)
     mods[mi] = _MODIFIERS[mods[mi]];
     return mods;
   }
