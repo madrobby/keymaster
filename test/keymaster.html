@@ -358,7 +358,7 @@
         var otherKeys = key.getPressedKeyCodes();
         t.assertTrue(pressedKeys.indexOf(65) >= 0);
         t.assertTrue(pressedKeys.indexOf(16) >= 0);
-        t.assertTrue(pressedKeys != otherKeys);
+        t.assertTrue(pressedKeys !== otherKeys);
         keyup(65); keyup(KEYS.shift);
       },
 
