@@ -77,6 +77,60 @@
         keydown(65);
         keyup(65);
         t.assertEqual(1, cnt);
+
+        cnt = 0;
+        key('a, b', function(){ cnt++ });
+        keydown(65);
+        keyup(65);
+        keydown(66);
+        keyup(66);
+        t.assertEqual(2, cnt);
+        key.unbind('a, b');
+        keydown(65);
+        keyup(65);
+        keydown(66);
+        keyup(66);
+        t.assertEqual(2, cnt);
+
+        cnt = 0;
+        key('a, b', function() { cnt++ });
+        keydown(65);
+        keyup(65);
+        keydown(66);
+        keyup(66);
+        t.assertEqual(2, cnt);
+        key.unbind('a');
+        keydown(65);
+        keyup(65);
+        keydown(66);
+        keyup(66);
+        t.assertEqual(3, cnt);
+        key.unbind('b');
+        keydown(65);
+        keyup(65);
+        keydown(66);
+        keyup(66);
+        t.assertEqual(3, cnt);
+
+        cnt = 0;
+        key('a, b', function() { cnt++ });
+        keydown(65);
+        keyup(65);
+        keydown(66);
+        keyup(66);
+        t.assertEqual(2, cnt);
+        key.unbind('b');
+        keydown(65);
+        keyup(65);
+        keydown(66);
+        keyup(66);
+        t.assertEqual(3, cnt);
+        key.unbind('a');
+        keydown(65);
+        keyup(65);
+        keydown(66);
+        keyup(66);
+        t.assertEqual(3, cnt);
       },
 
       testShortcutWithModifiers: function(t){

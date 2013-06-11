@@ -162,7 +162,7 @@
   };
 
   // unbind all handlers for given key in current scope
-  function unbindKey(key, scope) {
+  function unbind(key, scope) {
     var keys = key.split('+'),
       mods = [],
       i, obj;
@@ -188,6 +188,13 @@
       }
     }
   };
+
+  function unbindKey(key, scope) {
+    var keys = getKeys(key);
+    for (var i = 0; i < keys.length; i++) {
+      unbind(keys[i], scope);
+    }
+  }
 
   // Returns true if the key with code 'keyCode' is currently down
   // Converts strings into key codes.
