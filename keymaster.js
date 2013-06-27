@@ -180,14 +180,16 @@
     if (!_handlers[key]) {
       return;
     }
+    var newHandlers = [];
     for (i in _handlers[key]) {
       obj = _handlers[key][i];
       // only clear handlers if correct scope and mods match
-      if (obj.scope === scope && compareArray(obj.mods, mods)) {
-        _handlers[key][i] = {};
+      if (!(obj.scope === scope && compareArray(obj.mods, mods))) {
+        newHandlers.push( _handlers[key][i] );
       }
     }
-  };
+    _handlers[key] = newHandlers;
+  }
 
   // Returns true if the key with code 'keyCode' is currently down
   // Converts strings into key codes.
