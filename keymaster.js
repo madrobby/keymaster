@@ -3,6 +3,7 @@
 //     keymaster.js may be freely distributed under the MIT license.
 
 ;(function(global){
+  if (typeof document == 'undefined') return;
   var k,
     _handlers = {},
     _mods = { 16: false, 18: false, 17: false, 91: false },
