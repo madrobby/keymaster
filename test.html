@@ -21,6 +21,7 @@
     <li>Press 'c'. Console should log function call.</li>
     <li>Press 'o' or Enter or Cursor &larr;. Console should log function call.</li>
     <li>Press and hold 'm'. Console should log a message every second.</li>
+    <li>Press 'g' followed closely by 'q'. Console should log function call.</li>
     <li>Every second console should log a message listing all the currently pressed keycodes.</li>
   </ol>
 
@@ -87,6 +88,10 @@
         }
       }
     }, 1000);
+
+    key('g&q', function(event, handler) {
+      console.log('g&q were pressed');
+    });
 
     // document.onkeydown = function(event){
     //  console.log(event.keyCode);

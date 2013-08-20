@@ -382,6 +382,82 @@
         keydown(65); keyup(65);
         t.assertEqual(called, true);
         window.key = k;
+      },
+      
+      // TODO: Figure out how to do this without setTimeout madness.
+      testComboKeys: function(t) {
+        var firstTestTime = 900;
+        var secondTestTime = 1010;
+        var waitBetweenTests = firstTestTime + secondTestTime + 3000;
+
+        var runComboTest = function(keys) {
+          var timeoutTime, calls = 0, total = keys.length;
+
+          var iterateKeys = function(callback, giveIndex) {
+            for (var i = 0; i < total; i++) {
+              callback(keys[i], (giveIndex ? i : undefined));
+            }
+          };
+
+          var cleanup = function() {
+            iterateKeys(keyup);
+            console.log('calls = ' + calls);
+            t.assertEqual(calls, 2);
+            //Double check that it was unbound properly
+            console.log('unbinding');
+            key.unbind(keys.join('&'));
+            calls = 0;
+            iterateKeys(keydown);
+            iterateKeys(keyup);
+
+            console.log('calls = ' + calls);
+            t.assertEqual(calls, 0);
+          };
+
+          key(keys.join('&'), function() {
+            calls++;
+          });
+          // Test immediate keydown. calls = 1
+          iterateKeys(keydown);
+          iterateKeys(keyup);
+
+          // Test just under 1 second. calls = 2
+          timeoutTime = Math.floor(firstTestTime/total);
+          iterateKeys(function(key, index) {
+            setTimeout(function() {
+              console.log('keying down ' + key + ' on timeout 1');
+              keydown(key);
+            }, timeoutTime * index);
+          }, true);
+
+
+          //Test just over 1 second calls = 2 (still)
+          setTimeout(function(){
+            iterateKeys(keyup);
+            timeoutTime = Math.ceil(secondTestTime/total);
+            iterateKeys(function(key, index) {
+              setTimeout(function() {
+                console.log('keying down ' + key + ' on timeout 2');
+                keydown(key);
+              }, timeoutTime * index);
+            }, true);
+          }, firstTestTime + 10);
+
+
+          setTimeout(function() {
+            cleanup();
+          }, firstTestTime + secondTestTime + 1200);
+        };
+
+        runComboTest(['h', 'j', 'o']);
+        setTimeout(function() {
+          runComboTest(['g', 's']);
+        }, waitBetweenTests);
+
+        /* TODO: Support these: 
+         * runComboTest(['command+q', 'j']);
+         * runComboTest(['8', '7', '&']);
+         */
       }
     });
   </script>

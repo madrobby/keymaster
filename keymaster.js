@@ -32,7 +32,9 @@
     code = function(x){
       return _MAP[x] || x.toUpperCase().charCodeAt(0);
     },
-    _downKeys = [];
+    _downKeys = [],
+    _keyBuffer = [],
+    _comboShortcutHandlers = {};
 
   for(k=1;k<20;k++) _MAP['f'+k] = 111+k;
 
@@ -136,7 +138,7 @@
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys, mods;
+    var keys, mods, comboKeys;
     keys = getKeys(key);
     if (method === undefined) {
       method = scope;
@@ -153,23 +155,77 @@
         key = [key[key.length-1]];
       }
       // convert to keycode and...
-      key = key[0]
-      key = code(key);
-      // ...store handler
-      if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      key = key[0];
+      
+      // check whether it's a combo ...
+      if (isComboKey(key)) {
+        // if it is, assign each combo key to the handleComboKey handler
+        addComboKey(key, method);
+        comboKeys = key.split('&');
+        for (var j = 0; j < comboKeys.length; j++) {
+          assignKey(comboKeys[j], scope, handleComboKey);
+        }
+      } else {
+        // if it's not, assign the key with the given method
+        key = code(key);
+        // ...store handler
+        if (!(key in _handlers)) _handlers[key] = [];
+        _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      }
     }
-  };
+  }
+
+  function addComboKey(key, method) {
+    var comboKeys = key.split('&');
+    for (var i = 0; i < comboKeys.length; i++) {
+      comboKeys[i] = code(comboKeys[i]);
+    }
+    _comboShortcutHandlers[comboKeys.join('&')] = method;
+  }
+
+  function removeComboKey(key) {
+    var comboKeys = key.split('&');
+    for (var i = 0; i < comboKeys.length; i++) {
+      comboKeys[i] = code(comboKeys[i]);
+    }
+    delete _comboShortcutHandlers[comboKeys.join('&')];
+  }
+  
+  function handleComboKey(event) {
+    var handler, timer;
+
+    _keyBuffer.push(event.keyCode || event.which);
+    handler = _comboShortcutHandlers[_keyBuffer.join('&')];
+    if (handler !== undefined && _keyBuffer.length > 1) {
+      clearTimeout(timer);
+      _keyBuffer.length = 0;
+      handler(event, handler);
+    } else {
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        _keyBuffer.length = 0;
+      }, 1000);
+    }
+  }
 
   // unbind all handlers for given key in current scope
   function unbindKey(key, scope) {
     var keys = key.split('+'),
       mods = [],
-      i, obj;
+      i, obj, comboKeys;
 
     if (keys.length > 1) {
       mods = getMods(keys);
       key = keys[keys.length - 1];
+    }
+    
+    if (isComboKey(key)) {
+      // If it is, then remove the combo from the _comboShortcutHandlers
+      removeComboKey(key);
+      comboKeys = key.split('&');
+      for (var j = 0; j < comboKeys.length; j++) {
+        unbindKey(comboKeys[j], scope);
+      }
     }
 
     key = code(key);
@@ -237,6 +293,11 @@
       keys[keys.length - 2] += ',';
     }
     return keys;
+  }
+
+  // abstract combo key logic for assign and unassign.
+  function isComboKey(key) {
+    return !!key && key.length > 1 && key.indexOf('&') > 0;
   }
 
   // abstract mods logic for assign and unassign
