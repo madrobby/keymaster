@@ -79,10 +79,13 @@
     key('shift+]', function(){ console.log('shift+]') });
 
     setInterval(function () { 
+      var keys = key.getPressedKeyCodes();
+      if (keys.length > 0) {
         console.log('All keys currently down: ' + key.getPressedKeyCodes());
         if (key.isPressed(77)) {
             console.log('M key is currently down');
         }
+      }
     }, 1000);
 
     // document.onkeydown = function(event){
