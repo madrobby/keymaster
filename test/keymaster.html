@@ -34,6 +34,7 @@
     // we'll just simulate events roughly
     function keydown(code, modifiers, el){
       var event = document.createEvent('Event');
+      code = charCode(code);
       event.initEvent('keydown', true, true);
       event.keyCode = code;
       if (modifiers && modifiers.length > 0)
@@ -43,10 +44,19 @@
 
     function keyup(code, el){
       var event = document.createEvent('Event');
+      code = charCode(code);
       event.initEvent('keyup', true, true);
       event.keyCode = code;
       (el||document).dispatchEvent(event);
     }
+
+    function charCode(character) {
+      if (typeof character === 'string') {
+        return KEYS[character] || character.toUpperCase().charCodeAt(0);
+      } else {
+        return character;
+      }
+    };
 
     var KEYS = {
       '⇧': 16, shift: 16,
