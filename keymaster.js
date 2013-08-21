@@ -34,7 +34,8 @@
     },
     _downKeys = [],
     _keyBuffer = [],
-    _comboShortcutHandlers = {};
+    _comboShortcutHandlers = {},
+    _timer;
 
   for(k=1;k<20;k++) _MAP['f'+k] = 111+k;
 
@@ -161,7 +162,7 @@
       if (isComboKey(key)) {
         // if it is, assign each combo key to the handleComboKey handler
         addComboKey(key, method);
-        comboKeys = key.split('&');
+        comboKeys = uniqueArray(key.split('&'));
         for (var j = 0; j < comboKeys.length; j++) {
           assignKey(comboKeys[j], scope, handleComboKey);
         }
@@ -183,6 +184,17 @@
     _comboShortcutHandlers[comboKeys.join('&')] = method;
   }
 
+  function uniqueArray(arry) {
+    var unique = [];
+    var i, item;
+    for (i = 0; i < arry.length; i++) {
+      if (unique.indexOf(arry[i]) === -1) {
+        unique.push(arry[i]);
+      }
+    }
+    return unique;
+  }
+
   function removeComboKey(key) {
     var comboKeys = key.split('&');
     for (var i = 0; i < comboKeys.length; i++) {
@@ -192,17 +204,17 @@
   }
   
   function handleComboKey(event) {
-    var handler, timer;
+    var handler;
 
-    _keyBuffer.push(event.keyCode || event.which);
+    _keyBuffer.push(event.keyCode);
     handler = _comboShortcutHandlers[_keyBuffer.join('&')];
     if (handler !== undefined && _keyBuffer.length > 1) {
-      clearTimeout(timer);
+      clearTimeout(_timer);
       _keyBuffer.length = 0;
       handler(event, handler);
     } else {
-      clearTimeout(timer);
-      timer = setTimeout(function() {
+      clearTimeout(_timer);
+      _timer = setTimeout(function() {
         _keyBuffer.length = 0;
       }, 1000);
     }
