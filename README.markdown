@@ -34,6 +34,14 @@ key('ctrl+r', function(){ alert('stopped reload!'); return false });
 
 // multiple shortcuts that do the same thing
 key('⌘+r, ctrl+r', function(){ });
+
+// keyboard combinations
+key('g&i', function() { });
+// or, something more elaborate.
+key('y&o&u&space&r&o&c&k', function() {
+  alert('You rock too!');
+});
+
 ```
 
 The handler method is called with two arguments set, the keydown `event` fired, and

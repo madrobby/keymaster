@@ -62,7 +62,8 @@
       '⇧': 16, shift: 16,
       '⌥': 18, alt: 18, option: 18,
       '⌃': 17, ctrl: 17, control: 17,
-      '⌘': 91, command: 91
+      '⌘': 91, command: 91,
+      space: 32, up: 38
     };
 
     Evidence.TestCase.extend('KeymasterTest', {
@@ -386,9 +387,27 @@
       
       // TODO: Figure out how to do this without setTimeout madness.
       testComboKeys: function(t) {
-        var firstTestTime = 900;
-        var secondTestTime = 1010;
-        var waitBetweenTests = firstTestTime + secondTestTime + 3000;
+        var firstCombo = 'g&up&o';
+        var secondCombo = 'o&space&z';
+        var wait = {
+          first: {
+            betweenKeys: 800
+          },
+          betweenFirstStartAndSecondStart: function(total) {
+            return this.first.betweenKeys * total + this.timeForKeyBufferClear + this.buffer;
+          },
+          second: {
+            betweenKeys: 1200
+          },
+          totalTestTime: function(total) {
+            return this.betweenFirstStartAndSecondStart(total) + this.second.betweenKeys * total + this.buffer;
+          },
+          betweenTests: function(total) {
+            return this.totalTestTime(total) + this.buffer + this.timeForKeyBufferClear;
+          },
+          buffer: 300,
+          timeForKeyBufferClear: 1000
+        };
 
         var runComboTest = function(keys) {
           var timeoutTime, calls = 0, total = keys.length;
@@ -400,18 +419,29 @@
           };
 
           var cleanup = function() {
-            iterateKeys(keyup);
-            console.log('calls = ' + calls);
-            t.assertEqual(calls, 2);
+            var errors = [];
+            try {
+              t.assertEqual(calls, 2);
+              console.log('Successful calls');
+            } catch(e) {
+              errors.push(e);
+              console.error('Combo ' + keys.join('&') + ' failed: ' + calls + ' != 2');
+            }
             //Double check that it was unbound properly
-            console.log('unbinding');
-            key.unbind(keys.join('&'));
+            key.unbind(keys.join('&'), 'all');
             calls = 0;
             iterateKeys(keydown);
             iterateKeys(keyup);
-
-            console.log('calls = ' + calls);
-            t.assertEqual(calls, 0);
+            try {
+              t.assertEqual(calls, 0);
+              console.log('Successful unbinding');
+            } catch(e) {
+              errors.push(e);
+              console.error('Combo ' + keys.join('&') + ' failed: ' + calls + ' != 0');
+            }
+            if (errors.length === 0) {
+              console.log('Success for combo: ' + keys.join('&'));
+            }
           };
 
           key(keys.join('&'), function() {
@@ -421,42 +451,49 @@
           iterateKeys(keydown);
           iterateKeys(keyup);
 
-          // Test just under 1 second. calls = 2
-          timeoutTime = Math.floor(firstTestTime/total);
+          // Test less than one second between down. calls = 2
           iterateKeys(function(key, index) {
             setTimeout(function() {
-              console.log('keying down ' + key + ' on timeout 1');
               keydown(key);
-            }, timeoutTime * index);
+              keyup(key);
+            }, wait.first.betweenKeys * index);
           }, true);
 
 
-          //Test just over 1 second calls = 2 (still)
+          //Test just over 1 second between down calls = 2 (still)
           setTimeout(function(){
             iterateKeys(keyup);
-            timeoutTime = Math.ceil(secondTestTime/total);
             iterateKeys(function(key, index) {
               setTimeout(function() {
-                console.log('keying down ' + key + ' on timeout 2');
                 keydown(key);
-              }, timeoutTime * index);
+                keyup(key);
+              }, wait.second.betweenKeys * index);
             }, true);
-          }, firstTestTime + 10);
+          }, wait.betweenFirstStartAndSecondStart(total));
 
 
           setTimeout(function() {
             cleanup();
-          }, firstTestTime + secondTestTime + 1200);
+          }, wait.totalTestTime(total));
         };
 
-        runComboTest(['h', 'j', 'o']);
         setTimeout(function() {
-          runComboTest(['g', 's']);
-        }, waitBetweenTests);
+          console.log('Running timed tests... Don\'t go!');
+          console.log('Running ' + firstCombo);
+          runComboTest(firstCombo.split('&'));
+          setTimeout(function() {
+            console.log('Running ' + secondCombo);
+            runComboTest(secondCombo.split('&'));
+            setTimeout(function() {
+              console.log('Ok, now it\'s all done!');
+            }, wait.betweenTests(secondCombo.split('&').length));
+          }, wait.betweenTests(firstCombo.split('&').length));
+        }, 500); // Wait for other tests to finish...
 
-        /* TODO: Support these: 
-         * runComboTest(['command+q', 'j']);
-         * runComboTest(['8', '7', '&']);
+        /* 
+         * TODO: Support these: 
+         * 4&8&&
+         * u&command+z
          */
       }
     });
