@@ -387,8 +387,22 @@
       
       // TODO: Figure out how to do this without setTimeout madness.
       testComboKeys: function(t) {
-        var firstCombo = 'g&up&o';
-        var secondCombo = 'o&space&z';
+        //Test that the '&' can be a shortcut without being a combo.
+        var ampersand = 0;
+        key('&', function() {
+          ampersand++;
+        });
+        keydown('&');
+        keyup('&');
+        key.unbind('&', 'all');
+        keydown('&');
+        keyup('&');
+        t.assertEqual(ampersand, 1);
+        var combosToTest = [
+          'g&up&o',
+          'o&space&z'
+        ];
+        
         var wait = {
           first: {
             betweenKeys: 800
@@ -410,7 +424,7 @@
         };
 
         var runComboTest = function(keys) {
-          var timeoutTime, calls = 0, total = keys.length;
+          var calls = 0, total = keys.length;
 
           var iterateKeys = function(callback, giveIndex) {
             for (var i = 0; i < total; i++) {
@@ -419,28 +433,15 @@
           };
 
           var cleanup = function() {
-            var errors = [];
             try {
+              //Double check that it was unbound properly
+              key.unbind(keys.join('&'), 'all');
+              iterateKeys(keydown);
+              iterateKeys(keyup);
               t.assertEqual(calls, 2);
-              console.log('Successful calls');
-            } catch(e) {
-              errors.push(e);
-              console.error('Combo ' + keys.join('&') + ' failed: ' + calls + ' != 2');
-            }
-            //Double check that it was unbound properly
-            key.unbind(keys.join('&'), 'all');
-            calls = 0;
-            iterateKeys(keydown);
-            iterateKeys(keyup);
-            try {
-              t.assertEqual(calls, 0);
-              console.log('Successful unbinding');
-            } catch(e) {
-              errors.push(e);
-              console.error('Combo ' + keys.join('&') + ' failed: ' + calls + ' != 0');
-            }
-            if (errors.length === 0) {
               console.log('Success for combo: ' + keys.join('&'));
+            } catch(e) {
+              console.error('Combo ' + keys.join('&') + ' failed: ' + calls + ' != 2');
             }
           };
 
@@ -476,20 +477,23 @@
             cleanup();
           }, wait.totalTestTime(total));
         };
-
+        
+        var waitTime = 500;
+        for (var i = 0; i < combosToTest.length; i++) {
+          var combo = combosToTest[i];
+          setupTestStart(combo, waitTime);
+          waitTime += wait.betweenTests(combo.split('&').length);
+        }
         setTimeout(function() {
-          console.log('Running timed tests... Don\'t go!');
-          console.log('Running ' + firstCombo);
-          runComboTest(firstCombo.split('&'));
+          console.log('Ok, now we\'re really done.');
+        }, waitTime);
+        
+        function setupTestStart(combo, time) {
           setTimeout(function() {
-            console.log('Running ' + secondCombo);
-            runComboTest(secondCombo.split('&'));
-            setTimeout(function() {
-              console.log('Ok, now it\'s all done!');
-            }, wait.betweenTests(secondCombo.split('&').length));
-          }, wait.betweenTests(firstCombo.split('&').length));
-        }, 500); // Wait for other tests to finish...
-
+            console.log('Running combo test: ' + combo);
+            runComboTest(combo.split('&'));
+          }, time);
+        }
         /* 
          * TODO: Support these: 
          * 4&8&&
