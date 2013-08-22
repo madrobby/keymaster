@@ -24,6 +24,7 @@
       del: 46, 'delete': 46,
       home: 36, end: 35,
       pageup: 33, pagedown: 34,
+      ampersand: 38,
       ',': 188, '.': 190, '/': 191,
       '`': 192, '-': 189, '=': 187,
       ';': 186, '\'': 222,
@@ -161,6 +162,7 @@
       // check whether it's a combo ...
       if (isComboKey(key)) {
         // if it is, assign each combo key to the handleComboKey handler
+        key = key.replace('&&', (key.indexOf('&&') > 0) ? '&ampersand' : 'ampersand&');
         addComboKey(key, method);
         comboKeys = uniqueArray(key.split('&'));
         for (var j = 0; j < comboKeys.length; j++) {

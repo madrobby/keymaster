@@ -41,6 +41,7 @@ key('g&i', function() { });
 key('y&o&u&space&r&o&c&k', function() {
   alert('You rock too!');
 });
+// Note: If you wish to bind a '&' press event as a combo, you can either use `'g&&'` or `'g&ampersand'`.  
 
 ```
 
@@ -65,8 +66,9 @@ Keymaster understands the following modifiers:
 
 The following special keys can be used for shortcuts:
 `backspace`, `tab`, `clear`, `enter`, `return`, `esc`, `escape`, `space`,
-`up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`
-and `f1` through `f19`.
+`up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`,
+`ampersand`, and `f1` through `f19`.
+(Note, `up` and `ampersand` have the same char codes).
 
 ## Modifier key queries
 

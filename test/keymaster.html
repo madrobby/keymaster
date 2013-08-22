@@ -63,7 +63,8 @@
       '⌥': 18, alt: 18, option: 18,
       '⌃': 17, ctrl: 17, control: 17,
       '⌘': 91, command: 91,
-      space: 32, up: 38
+      space: 32, up: 38,
+      ampersand: 38
     };
 
     Evidence.TestCase.extend('KeymasterTest', {
@@ -399,6 +400,8 @@
         keyup('&');
         t.assertEqual(ampersand, 1);
         var combosToTest = [
+          '1&&',
+          '&&2',
           'g&up&o',
           'o&space&z'
         ];
@@ -482,7 +485,7 @@
         for (var i = 0; i < combosToTest.length; i++) {
           var combo = combosToTest[i];
           setupTestStart(combo, waitTime);
-          waitTime += wait.betweenTests(combo.split('&').length);
+          waitTime += wait.betweenTests(splitCombo(combo).length);
         }
         setTimeout(function() {
           console.log('Ok, now we\'re really done.');
@@ -491,8 +494,12 @@
         function setupTestStart(combo, time) {
           setTimeout(function() {
             console.log('Running combo test: ' + combo);
-            runComboTest(combo.split('&'));
+            runComboTest(splitCombo(combo));
           }, time);
+        }
+        
+        function splitCombo(combo) {
+          return combo.replace('&&', (combo.indexOf('&&') > 0) ? '&ampersand' : 'ampersand&').split('&');
         }
         /* 
          * TODO: Support these: 
