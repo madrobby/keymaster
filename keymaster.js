@@ -36,7 +36,8 @@
     _downKeys = [],
     _keyBuffer = [],
     _comboShortcutHandlers = {},
-    _timer;
+    _timer,
+    _enabled = true;
 
   for(k=1;k<20;k++) _MAP['f'+k] = 111+k;
 
@@ -69,6 +70,9 @@
   // handle keydown event
   function dispatch(event, scope){
     var key, handler, k, i, modifiersMatch;
+    if (!_enabled) {
+      return;
+    }
     key = event.keyCode;
 
     if (index(_downKeys, key) == -1) {
@@ -357,6 +361,13 @@
   global.key.getPressedKeyCodes = getPressedKeyCodes;
   global.key.noConflict = noConflict;
   global.key.unbind = unbindKey;
+  global.key.enabled = function(enable) {
+    if (enable !== undefined) {
+      _enabled = enable;
+    }
+    return _enabled;
+  };
+
 
   if(typeof module !== 'undefined') module.exports = key;
 

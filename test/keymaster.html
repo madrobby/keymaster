@@ -506,6 +506,21 @@
          * 4&8&&
          * u&command+z
          */
+      },
+      testDisable: function(t) {
+        var called = false;
+        key('a', function() {
+          called = true;
+        });
+        t.assertTrue(key.enabled());
+        key.enabled(false);
+        t.assertFalse(key.enabled());
+        keydown('a');
+        t.assertFalse(called);
+        key.enabled(true);
+        t.assertTrue(key.enabled());
+        keydown('a');
+        t.assertTrue(called);
       }
     });
   </script>
