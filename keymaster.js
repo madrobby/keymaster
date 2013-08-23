@@ -102,11 +102,11 @@
     if (_keyBuffer.length > 0) {
       for (i = 0; i < keyHandlers.length; i++) {
         // check if this key has a combo key method and...
-        if (keyHandlers[i].method === handleComboKey) {
+        if (keyHandlers[i].method === handleComboKey && couldBeCombo(_keyBuffer.join('&') + '&' + key)) {
           // if it does, call it and return
           finishDispatch(event, keyHandlers[i], scope);
           return;
-        }           
+        }
       }
     }
     
@@ -115,7 +115,16 @@
       handler = _handlers[key][i];
       finishDispatch(event, handler, scope);
     }
-  };
+  }
+  
+  function couldBeCombo(nextCombo) {
+    for (var prop in _comboShortcutMethods) {
+      if (prop.match(nextCombo)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   function finishDispatch(event, handler, scope) {
     var modifiersMatch;
