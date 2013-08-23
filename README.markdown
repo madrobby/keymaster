@@ -41,7 +41,9 @@ key('g&i', function() { });
 key('y&o&u&space&r&o&c&k', function() {
   alert('You rock too!');
 });
-// Note: If you wish to bind a '&' press event as a combo, you can either use `'g&&'` or `'g&ampersand'`.  
+// Note: If you wish to bind a '&' press event as a combo, you can either use `'g&&'` or `'g&ampersand'`.
+// Also note that if the first key in a registered combo is registered on the same scope to do something else,
+//   the other action will never happen because the combo handler hijacks the events. Also, modifiers are not yet supported.
 
 ```
 
@@ -208,5 +210,5 @@ submit a pull request.
 
 * Finish test suite
 
-Keymaster is (c) 2011-2013 Thomas Fuchs and may be freely distributed under the MIT license.
+Keymaster is (c) 2011-2013 Thomas Fuchs with contributions by Kent C. Dodds and may be freely distributed under the MIT license.
 See the `MIT-LICENSE` file.

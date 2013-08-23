@@ -1,5 +1,5 @@
 //     keymaster.js
-//     (c) 2011-2012 Thomas Fuchs
+//     (c) 2011-2012 Thomas Fuchs with contributions by Kent C. Dodds 2013
 //     keymaster.js may be freely distributed under the MIT license.
 
 ;(function(global){
@@ -70,14 +70,14 @@
 
   // handle keydown event
   function dispatch(event, scope){
-    var key, handler, k, i, modifiersMatch;
+    var key, handler, k, i, keyHandlers;
     if (!_enabled) {
       return;
     }
     key = event.keyCode;
 
     if (index(_downKeys, key) == -1) {
-        _downKeys.push(key);
+      _downKeys.push(key);
     }
 
     // if a modifier key, set the key.<modifierkeyname> property to true and return
@@ -97,25 +97,42 @@
     // abort if no potentially matching shortcuts found
     if (!(key in _handlers)) return;
 
-    // for each potential shortcut
-    for (i = 0; i < _handlers[key].length; i++) {
+    keyHandlers = _handlers[key];
+    // if we're in the middle of a combo then...
+    if (_keyBuffer.length > 0) {
+      for (i = 0; i < keyHandlers.length; i++) {
+        // check if this key has a combo key method and...
+        if (keyHandlers[i].method === handleComboKey) {
+          // if it does, call it and return
+          finishDispatch(event, keyHandlers[i], scope);
+          return;
+        }           
+      }
+    }
+    
+    // If we haven't already returned, for each potential shortcut
+    for (i = 0; i < keyHandlers.length; i++) {
       handler = _handlers[key][i];
+      finishDispatch(event, handler, scope);
+    }
+  };
 
-      // see if it's in the current scope
-      if(handler.scope == scope || handler.scope == 'all'){
-        // check if modifiers match if any
-        modifiersMatch = handler.mods.length > 0;
-        for(k in _mods)
-          if((!_mods[k] && index(handler.mods, +k) > -1) ||
-            (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
-        // call the handler and stop the event if neccessary
-        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
-          if(handler.method(event, handler)===false){
-            if(event.preventDefault) event.preventDefault();
-              else event.returnValue = false;
-            if(event.stopPropagation) event.stopPropagation();
-            if(event.cancelBubble) event.cancelBubble = true;
-          }
+  function finishDispatch(event, handler, scope) {
+    var modifiersMatch;
+    // see if it's in the current scope
+    if(handler.scope == scope || handler.scope == 'all'){
+      // check if modifiers match if any
+      modifiersMatch = handler.mods.length > 0;
+      for(k in _mods)
+        if((!_mods[k] && index(handler.mods, +k) > -1) ||
+          (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
+      // call the handler and stop the event if neccessary
+      if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
+        if(handler.method(event, handler)===false){
+          if(event.preventDefault) event.preventDefault();
+          else event.returnValue = false;
+          if(event.stopPropagation) event.stopPropagation();
+          if(event.cancelBubble) event.cancelBubble = true;
         }
       }
     }
@@ -198,8 +215,8 @@
       key = arry[i];
       if (unique.indexOf(key) === -1 && _comboKeys.indexOf(key) === -1) {
         unique.push(key);
-        _comboKeys.push(key);
       }
+      _comboKeys.push(key);
     }
     return unique;
   }
@@ -207,6 +224,7 @@
   function removeComboKey(key) {
     var comboKeys = key.split('&');
     for (var i = 0; i < comboKeys.length; i++) {
+      _comboKeys.splice(_comboKeys.indexOf(comboKeys[i]), 1);
       comboKeys[i] = code(comboKeys[i]);
     }
     delete _comboShortcutMethods[comboKeys.join('&')];

@@ -323,6 +323,7 @@
         keyup(65);
         t.assertEqual(1, cntFiles);
         t.assertEqual(1, cntIssues);
+        key.setScope('all'); // Set it back to all for the rest of the tests.
       },
 
       testDoesntFireOnUserInputElements: function(t){
@@ -411,7 +412,7 @@
             betweenKeys: 800
           },
           betweenFirstStartAndSecondStart: function(total) {
-            return this.first.betweenKeys * total + this.timeForKeyBufferClear + this.buffer;
+            return this.first.betweenKeys * total + 2*this.timeForKeyBufferClear + this.buffer;
           },
           second: {
             betweenKeys: 1200
@@ -460,7 +461,7 @@
             setTimeout(function() {
               keydown(key);
               keyup(key);
-            }, wait.first.betweenKeys * index);
+            }, wait.first.betweenKeys * index + wait.timeForKeyBufferClear);
           }, true);
 
 
