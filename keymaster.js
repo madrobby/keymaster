@@ -38,6 +38,7 @@
     _comboShortcutMethods = {},
     _comboKeys = [],
     _timer,
+    _comboTimeout = 1000,
     _enabled = true;
 
   for(k=1;k<20;k++) _MAP['f'+k] = 111+k;
@@ -254,7 +255,7 @@
       clearTimeout(_timer);
       _timer = setTimeout(function() {
         _keyBuffer.length = 0;
-      }, 1000);
+      }, _comboTimeout);
     }
   }
 
@@ -399,6 +400,12 @@
     }
     return _enabled;
   };
+  global.key.comboTimeout = function(newTimeout) {
+    if (newTimeout !== undefined) {
+      _comboTimeout = newTimeout;
+    }
+    return _comboTimeout;
+  }
 
 
   if(typeof module !== 'undefined') module.exports = key;
