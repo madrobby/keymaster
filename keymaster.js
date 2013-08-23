@@ -36,6 +36,7 @@
     _downKeys = [],
     _keyBuffer = [],
     _comboShortcutHandlers = {},
+    _comboKeys = [],
     _timer,
     _enabled = true;
 
@@ -192,10 +193,12 @@
 
   function uniqueArray(arry) {
     var unique = [];
-    var i, item;
+    var i, key;
     for (i = 0; i < arry.length; i++) {
-      if (unique.indexOf(arry[i]) === -1) {
-        unique.push(arry[i]);
+      key = arry[i];
+      if (unique.indexOf(key) === -1 && _comboKeys.indexOf(key) === -1) {
+        unique.push(key);
+        _comboKeys.push(key);
       }
     }
     return unique;
