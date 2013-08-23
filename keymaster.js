@@ -248,6 +248,8 @@
       clearTimeout(_timer);
       _keyBuffer.length = 0;
       handler(event, handler);
+    } else if (!couldBeCombo(_keyBuffer.join('&'))) {
+      _keyBuffer.length = 0;
     } else {
       clearTimeout(_timer);
       _timer = setTimeout(function() {
