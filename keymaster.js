@@ -35,7 +35,7 @@
     },
     _downKeys = [],
     _keyBuffer = [],
-    _comboShortcutHandlers = {},
+    _comboShortcutMethods = {},
     _comboKeys = [],
     _timer,
     _enabled = true;
@@ -188,7 +188,7 @@
     for (var i = 0; i < comboKeys.length; i++) {
       comboKeys[i] = code(comboKeys[i]);
     }
-    _comboShortcutHandlers[comboKeys.join('&')] = method;
+    _comboShortcutMethods[comboKeys.join('&')] = method;
   }
 
   function uniqueArray(arry) {
@@ -209,14 +209,14 @@
     for (var i = 0; i < comboKeys.length; i++) {
       comboKeys[i] = code(comboKeys[i]);
     }
-    delete _comboShortcutHandlers[comboKeys.join('&')];
+    delete _comboShortcutMethods[comboKeys.join('&')];
   }
   
   function handleComboKey(event) {
     var handler;
 
     _keyBuffer.push(event.keyCode);
-    handler = _comboShortcutHandlers[_keyBuffer.join('&')];
+    handler = _comboShortcutMethods[_keyBuffer.join('&')];
     if (handler !== undefined && _keyBuffer.length > 1) {
       clearTimeout(_timer);
       _keyBuffer.length = 0;
@@ -241,7 +241,7 @@
     }
     
     if (isComboKey(key)) {
-      // If it is, then remove the combo from the _comboShortcutHandlers
+      // If it is, then remove the combo from the _comboShortcutMethods
       removeComboKey(key);
       comboKeys = key.split('&');
       for (var j = 0; j < comboKeys.length; j++) {
