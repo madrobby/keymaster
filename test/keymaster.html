@@ -34,6 +34,7 @@
     // we'll just simulate events roughly
     function keydown(code, modifiers, el){
       var event = document.createEvent('Event');
+      code = charCode(code);
       event.initEvent('keydown', true, true);
       event.keyCode = code;
       if (modifiers && modifiers.length > 0)
@@ -43,16 +44,27 @@
 
     function keyup(code, el){
       var event = document.createEvent('Event');
+      code = charCode(code);
       event.initEvent('keyup', true, true);
       event.keyCode = code;
       (el||document).dispatchEvent(event);
     }
 
+    function charCode(character) {
+      if (typeof character === 'string') {
+        return KEYS[character] || character.toUpperCase().charCodeAt(0);
+      } else {
+        return character;
+      }
+    };
+
     var KEYS = {
       '⇧': 16, shift: 16,
       '⌥': 18, alt: 18, option: 18,
       '⌃': 17, ctrl: 17, control: 17,
-      '⌘': 91, command: 91
+      '⌘': 91, command: 91,
+      space: 32, up: 38,
+      ampersand: 38
     };
 
     Evidence.TestCase.extend('KeymasterTest', {
@@ -311,6 +323,7 @@
         keyup(65);
         t.assertEqual(1, cntFiles);
         t.assertEqual(1, cntIssues);
+        key.setScope('all'); // Set it back to all for the rest of the tests.
       },
 
       testDoesntFireOnUserInputElements: function(t){
@@ -372,6 +385,143 @@
         keydown(65); keyup(65);
         t.assertEqual(called, true);
         window.key = k;
+      },
+      
+      // TODO: Figure out how to do this without setTimeout madness.
+      testComboKeys: function(t) {
+        //Test that the '&' can be a shortcut without being a combo.
+        var ampersand = 0;
+        key('&', function() {
+          ampersand++;
+        });
+        keydown('&');
+        keyup('&');
+        key.unbind('&', 'all');
+        keydown('&');
+        keyup('&');
+        t.assertEqual(ampersand, 1);
+        var combosToTest = [
+          '1&&',
+          '&&2',
+          'g&up&o',
+          'o&space&z'
+        ];
+        
+        var wait = {
+          first: {
+            betweenKeys: 800
+          },
+          betweenFirstStartAndSecondStart: function(total) {
+            return this.first.betweenKeys * total + 2*this.timeForKeyBufferClear + this.buffer;
+          },
+          second: {
+            betweenKeys: 1200
+          },
+          totalTestTime: function(total) {
+            return this.betweenFirstStartAndSecondStart(total) + this.second.betweenKeys * total + this.buffer;
+          },
+          betweenTests: function(total) {
+            return this.totalTestTime(total) + this.buffer + this.timeForKeyBufferClear;
+          },
+          buffer: 300,
+          timeForKeyBufferClear: 1000
+        };
+
+        var runComboTest = function(keys) {
+          var calls = 0, total = keys.length;
+
+          var iterateKeys = function(callback, giveIndex) {
+            for (var i = 0; i < total; i++) {
+              callback(keys[i], (giveIndex ? i : undefined));
+            }
+          };
+
+          var cleanup = function() {
+            try {
+              //Double check that it was unbound properly
+              key.unbind(keys.join('&'), 'all');
+              iterateKeys(keydown);
+              iterateKeys(keyup);
+              t.assertEqual(calls, 2);
+              console.log('Success for combo: ' + keys.join('&'));
+            } catch(e) {
+              console.error('Combo ' + keys.join('&') + ' failed: ' + calls + ' != 2');
+            }
+          };
+
+          key(keys.join('&'), function() {
+            calls++;
+          });
+          // Test immediate keydown. calls = 1
+          iterateKeys(keydown);
+          iterateKeys(keyup);
+
+          // Test less than one second between down. calls = 2
+          iterateKeys(function(key, index) {
+            setTimeout(function() {
+              keydown(key);
+              keyup(key);
+            }, wait.first.betweenKeys * index + wait.timeForKeyBufferClear);
+          }, true);
+
+
+          //Test just over 1 second between down calls = 2 (still)
+          setTimeout(function(){
+            iterateKeys(keyup);
+            iterateKeys(function(key, index) {
+              setTimeout(function() {
+                keydown(key);
+                keyup(key);
+              }, wait.second.betweenKeys * index);
+            }, true);
+          }, wait.betweenFirstStartAndSecondStart(total));
+
+
+          setTimeout(function() {
+            cleanup();
+          }, wait.totalTestTime(total));
+        };
+        
+        var waitTime = 500;
+        for (var i = 0; i < combosToTest.length; i++) {
+          var combo = combosToTest[i];
+          setupTestStart(combo, waitTime);
+          waitTime += wait.betweenTests(splitCombo(combo).length);
+        }
+        setTimeout(function() {
+          console.log('Ok, now we\'re really done.');
+        }, waitTime);
+        
+        function setupTestStart(combo, time) {
+          setTimeout(function() {
+            console.log('Running combo test: ' + combo);
+            runComboTest(splitCombo(combo));
+          }, time);
+        }
+        
+        function splitCombo(combo) {
+          return combo.replace('&&', (combo.indexOf('&&') > 0) ? '&ampersand' : 'ampersand&').split('&');
+        }
+        /* 
+         * TODO: Support these: 
+         * 4&8&&
+         * u&command+z
+         */
+      },
+      testDisable: function(t) {
+        var called = false;
+        key('a', function() {
+          called = true;
+        });
+        t.assertTrue(key.enabled());
+        key.enabled(false);
+        t.assertFalse(key.enabled());
+        keydown('a');
+        t.assertFalse(called);
+        key.enabled(true);
+        t.assertTrue(key.enabled());
+        keydown('a');
+        t.assertTrue(called);
       }
     });
   </script>

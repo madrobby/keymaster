@@ -1,5 +1,5 @@
 //     keymaster.js
-//     (c) 2011-2012 Thomas Fuchs
+//     (c) 2011-2012 Thomas Fuchs with contributions by Kent C. Dodds 2013
 //     keymaster.js may be freely distributed under the MIT license.
 
 ;(function(global){
@@ -24,6 +24,7 @@
       del: 46, 'delete': 46,
       home: 36, end: 35,
       pageup: 33, pagedown: 34,
+      ampersand: 38,
       ',': 188, '.': 190, '/': 191,
       '`': 192, '-': 189, '=': 187,
       ';': 186, '\'': 222,
@@ -32,7 +33,13 @@
     code = function(x){
       return _MAP[x] || x.toUpperCase().charCodeAt(0);
     },
-    _downKeys = [];
+    _downKeys = [],
+    _keyBuffer = [],
+    _comboShortcutMethods = {},
+    _comboKeys = [],
+    _timer,
+    _comboTimeout = 1000,
+    _enabled = true;
 
   for(k=1;k<20;k++) _MAP['f'+k] = 111+k;
 
@@ -64,11 +71,14 @@
 
   // handle keydown event
   function dispatch(event, scope){
-    var key, handler, k, i, modifiersMatch;
+    var key, handler, k, i, keyHandlers;
+    if (!_enabled) {
+      return;
+    }
     key = event.keyCode;
 
     if (index(_downKeys, key) == -1) {
-        _downKeys.push(key);
+      _downKeys.push(key);
     }
 
     // if a modifier key, set the key.<modifierkeyname> property to true and return
@@ -88,25 +98,51 @@
     // abort if no potentially matching shortcuts found
     if (!(key in _handlers)) return;
 
-    // for each potential shortcut
-    for (i = 0; i < _handlers[key].length; i++) {
+    keyHandlers = _handlers[key];
+    // if we're in the middle of a combo then...
+    if (_keyBuffer.length > 0) {
+      for (i = 0; i < keyHandlers.length; i++) {
+        // check if this key has a combo key method and...
+        if (keyHandlers[i].method === handleComboKey && couldBeCombo(_keyBuffer.join('&') + '&' + key)) {
+          // if it does, call it and return
+          finishDispatch(event, keyHandlers[i], scope);
+          return;
+        }
+      }
+    }
+    
+    // If we haven't already returned, for each potential shortcut
+    for (i = 0; i < keyHandlers.length; i++) {
       handler = _handlers[key][i];
+      finishDispatch(event, handler, scope);
+    }
+  }
+  
+  function couldBeCombo(nextCombo) {
+    for (var prop in _comboShortcutMethods) {
+      if (prop.match(nextCombo)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-      // see if it's in the current scope
-      if(handler.scope == scope || handler.scope == 'all'){
-        // check if modifiers match if any
-        modifiersMatch = handler.mods.length > 0;
-        for(k in _mods)
-          if((!_mods[k] && index(handler.mods, +k) > -1) ||
-            (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
-        // call the handler and stop the event if neccessary
-        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
-          if(handler.method(event, handler)===false){
-            if(event.preventDefault) event.preventDefault();
-              else event.returnValue = false;
-            if(event.stopPropagation) event.stopPropagation();
-            if(event.cancelBubble) event.cancelBubble = true;
-          }
+  function finishDispatch(event, handler, scope) {
+    var modifiersMatch;
+    // see if it's in the current scope
+    if(handler.scope == scope || handler.scope == 'all'){
+      // check if modifiers match if any
+      modifiersMatch = handler.mods.length > 0;
+      for(k in _mods)
+        if((!_mods[k] && index(handler.mods, +k) > -1) ||
+          (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
+      // call the handler and stop the event if neccessary
+      if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
+        if(handler.method(event, handler)===false){
+          if(event.preventDefault) event.preventDefault();
+          else event.returnValue = false;
+          if(event.stopPropagation) event.stopPropagation();
+          if(event.cancelBubble) event.cancelBubble = true;
         }
       }
     }
@@ -136,7 +172,7 @@
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys, mods;
+    var keys, mods, comboKeys;
     keys = getKeys(key);
     if (method === undefined) {
       method = scope;
@@ -153,23 +189,94 @@
         key = [key[key.length-1]];
       }
       // convert to keycode and...
-      key = key[0]
-      key = code(key);
-      // ...store handler
-      if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      key = key[0];
+      
+      // check whether it's a combo ...
+      if (isComboKey(key)) {
+        // if it is, assign each combo key to the handleComboKey handler
+        key = key.replace('&&', (key.indexOf('&&') > 0) ? '&ampersand' : 'ampersand&');
+        addComboKey(key, method);
+        comboKeys = uniqueArray(key.split('&'));
+        for (var j = 0; j < comboKeys.length; j++) {
+          assignKey(comboKeys[j], scope, handleComboKey);
+        }
+      } else {
+        // if it's not, assign the key with the given method
+        key = code(key);
+        // ...store handler
+        if (!(key in _handlers)) _handlers[key] = [];
+        _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      }
     }
-  };
+  }
+
+  function addComboKey(key, method) {
+    var comboKeys = key.split('&');
+    for (var i = 0; i < comboKeys.length; i++) {
+      comboKeys[i] = code(comboKeys[i]);
+    }
+    _comboShortcutMethods[comboKeys.join('&')] = method;
+  }
+
+  function uniqueArray(arry) {
+    var unique = [];
+    var i, key;
+    for (i = 0; i < arry.length; i++) {
+      key = arry[i];
+      if (unique.indexOf(key) === -1 && _comboKeys.indexOf(key) === -1) {
+        unique.push(key);
+      }
+      _comboKeys.push(key);
+    }
+    return unique;
+  }
+
+  function removeComboKey(key) {
+    var comboKeys = key.split('&');
+    for (var i = 0; i < comboKeys.length; i++) {
+      _comboKeys.splice(_comboKeys.indexOf(comboKeys[i]), 1);
+      comboKeys[i] = code(comboKeys[i]);
+    }
+    delete _comboShortcutMethods[comboKeys.join('&')];
+  }
+  
+  function handleComboKey(event) {
+    var handler;
+
+    _keyBuffer.push(event.keyCode);
+    handler = _comboShortcutMethods[_keyBuffer.join('&')];
+    if (handler !== undefined && _keyBuffer.length > 1) {
+      clearTimeout(_timer);
+      _keyBuffer.length = 0;
+      handler(event, handler);
+    } else if (!couldBeCombo(_keyBuffer.join('&'))) {
+      _keyBuffer.length = 0;
+    } else {
+      clearTimeout(_timer);
+      _timer = setTimeout(function() {
+        _keyBuffer.length = 0;
+      }, _comboTimeout);
+    }
+  }
 
   // unbind all handlers for given key in current scope
   function unbindKey(key, scope) {
     var keys = key.split('+'),
       mods = [],
-      i, obj;
+      i, obj, comboKeys;
 
     if (keys.length > 1) {
       mods = getMods(keys);
       key = keys[keys.length - 1];
+    }
+    
+    if (isComboKey(key)) {
+      // If it is, then remove the combo from the _comboShortcutMethods
+      removeComboKey(key);
+      comboKeys = key.split('&');
+      for (var j = 0; j < comboKeys.length; j++) {
+        unbindKey(comboKeys[j], scope);
+      }
     }
 
     key = code(key);
@@ -239,6 +346,11 @@
     return keys;
   }
 
+  // abstract combo key logic for assign and unassign.
+  function isComboKey(key) {
+    return !!key && key.length > 1 && key.indexOf('&') > 0;
+  }
+
   // abstract mods logic for assign and unassign
   function getMods(key) {
     var mods = key.slice(0, key.length - 1);
@@ -282,6 +394,19 @@
   global.key.getPressedKeyCodes = getPressedKeyCodes;
   global.key.noConflict = noConflict;
   global.key.unbind = unbindKey;
+  global.key.enabled = function(enable) {
+    if (enable !== undefined) {
+      _enabled = enable;
+    }
+    return _enabled;
+  };
+  global.key.comboTimeout = function(newTimeout) {
+    if (newTimeout !== undefined) {
+      _comboTimeout = newTimeout;
+    }
+    return _comboTimeout;
+  }
+
 
   if(typeof module !== 'undefined') module.exports = key;
 
