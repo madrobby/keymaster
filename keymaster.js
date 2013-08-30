@@ -63,8 +63,8 @@
   };
 
   // handle keydown event
-  function dispatch(event, scope){
-    var key, handler, k, i, modifiersMatch;
+  function dispatch(event) {
+    var key, handler, k, i, modifiersMatch, scope;
     key = event.keyCode;
 
     if (index(_downKeys, key) == -1) {
@@ -87,6 +87,8 @@
 
     // abort if no potentially matching shortcuts found
     if (!(key in _handlers)) return;
+
+    scope = getScope();
 
     // for each potential shortcut
     for (i = 0; i < _handlers[key].length; i++) {
@@ -256,7 +258,7 @@
   };
 
   // set the handlers globally on document
-  addEvent(document, 'keydown', function(event) { dispatch(event, _scope) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
+  addEvent(document, 'keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
   addEvent(document, 'keyup', clearModifier);
 
   // reset modifiers to false whenever the window is (re)focused.
