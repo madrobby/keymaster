@@ -292,7 +292,7 @@
         var cntIssues = 0, cntFiles = 0;
         key('a', 'issues', function(){ cntIssues++ });
         key('a', 'files', function(){ cntFiles++ });
-        
+
         key.setScope('issues');
         keydown(65);
         keyup(65);
@@ -301,7 +301,7 @@
         keydown(65);
         keyup(65);
         t.assertEqual(1, cntIssues);
-        
+
         key.setScope('files');
         keydown(65);
         keyup(65);
@@ -372,6 +372,42 @@
         keydown(65); keyup(65);
         t.assertEqual(called, true);
         window.key = k;
+      },
+
+      testScopeChangeDuringFilter: function(t) {
+        var oldFilter = key.filter
+          , scope1Pressed = 0
+          , scope2Pressed = 0;
+
+        key('a', 'scope1', function() {
+          ++scope1Pressed;
+        });
+
+        key('a', 'scope2', function() {
+          ++scope2Pressed;
+        });
+
+        key.filter = function() {
+          key.setScope('scope1');
+          return true;
+        };
+
+        keydown(65);
+        keyup(65);
+        t.assertTrue(scope1Pressed === 1);
+
+        key.filter = function() {
+          key.setScope('scope2');
+          return true;
+        };
+
+        keydown(65);
+        keyup(65);
+        t.assertTrue(scope1Pressed === 1);
+        t.assertTrue(scope2Pressed === 1);
+
+        key.filter = oldFilter;
+        key.setScope();
       }
     });
   </script>
