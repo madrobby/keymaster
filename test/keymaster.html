@@ -174,6 +174,31 @@
         t.assertEqual(1, cntCommandCtrlAltShiftA);
       },
 
+      testUnbindWithModifiersMultiple: function(t){
+        var cntA = 0, cntShiftA = 0, cntCtrlShiftA = 0;
+        key('a', function(){ cntA++ });
+        key('shift+a', function(){ cntShiftA++ });
+        key('ctrl+shift+a', function(){ cntCtrlShiftA++ });
+
+        keydown(65); keyup(65);
+        keydown(KEYS.shift); keydown(65, [16]); keyup(65); keyup(KEYS.shift);
+        keydown(KEYS.shift); keydown(KEYS.ctrl); keydown(65, [16, 17]); keyup(65); keyup(KEYS.shift); keyup(KEYS.ctrl);
+
+        t.assertEqual(1, cntA);
+        t.assertEqual(1, cntShiftA);
+        t.assertEqual(1, cntCtrlShiftA);
+
+        key.unbind('a, shift+a, ctrl+shift+a');
+
+        keydown(65); keyup(65);
+        keydown(KEYS.shift); keydown(65, [16]); keyup(65); keyup(KEYS.shift);
+        keydown(KEYS.shift); keydown(KEYS.ctrl); keydown(65, [16, 17]); keyup(65); keyup(KEYS.shift); keyup(KEYS.ctrl);
+
+        t.assertEqual(1, cntA);
+        t.assertEqual(1, cntShiftA);
+        t.assertEqual(1, cntCtrlShiftA);
+      },
+
       testFancyModifierKeys: function(t){
         var sequence = '';
         key('⌃+a', function(){ sequence += 'a' });
