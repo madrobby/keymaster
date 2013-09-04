@@ -165,28 +165,34 @@
 
   // unbind all handlers for given key in current scope
   function unbindKey(key, scope) {
-    var keys = key.split('+'),
+    var multipleKeys, keys,
       mods = [],
-      i, obj;
+      i, j, obj;
 
-    if (keys.length > 1) {
-      mods = getMods(keys);
-      key = keys[keys.length - 1];
-    }
+    multipleKeys = getKeys(key);
 
-    key = code(key);
+    for (j = 0; j < multipleKeys.length; j++) {
+      keys = multipleKeys[j].split('+');
 
-    if (scope === undefined) {
-      scope = getScope();
-    }
-    if (!_handlers[key]) {
-      return;
-    }
-    for (i in _handlers[key]) {
-      obj = _handlers[key][i];
-      // only clear handlers if correct scope and mods match
-      if (obj.scope === scope && compareArray(obj.mods, mods)) {
-        _handlers[key][i] = {};
+      if (keys.length > 1) {
+        mods = getMods(keys);
+        key = keys[keys.length - 1];
+      }
+
+      key = code(key);
+
+      if (scope === undefined) {
+        scope = getScope();
+      }
+      if (!_handlers[key]) {
+        return;
+      }
+      for (i in _handlers[key]) {
+        obj = _handlers[key][i];
+        // only clear handlers if correct scope and mods match
+        if (obj.scope === scope && compareArray(obj.mods, mods)) {
+          _handlers[key][i] = {};
+        }
       }
     }
   };
