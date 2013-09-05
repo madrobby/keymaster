@@ -1,7 +1,7 @@
 # keymaster.js
 
 Keymaster is a simple micro-library for defining and
-dispatching keyboard shortcuts in web applications. 
+dispatching keyboard shortcuts in web applications.
 
 It has no dependencies.
 
@@ -23,7 +23,7 @@ It should not interfere with any JavaScript libraries or frameworks.
 ## Defining shortcuts
 
 One global method is exposed, `key` which defines shortcuts when
-called directly. 
+called directly.
 
 ```javascript
 // define short of 'a'
@@ -103,7 +103,7 @@ key('o, enter', 'files', function(){ /* do something else */ });
 key.setScope('issues'); // default scope is 'all'
 ```
 
-## Filter key presses 
+## Filter key presses
 
 By default, when an `INPUT`, `SELECT` or `TEXTAREA` element is focused, Keymaster doesn't process any shortcuts.
 
@@ -121,8 +121,26 @@ function filter(event){
 }
 ```
 
-If you only want _some_ shortcuts to work while in a input element, you change the scope in the 
-key.filter function; however a more robust way to handle this is to use proper
+If you only want _some_ shortcuts to work while in a input element, you change the scope in the
+`key.filter` function - here's an example implementation, setting the scope to either `'input'` or `'other'`.
+In this case, it's important to always return `true` from the filter function:
+
+```javascript
+key.filter = function(event){
+  var tagName = (event.target || event.srcElement).tagName;
+  if ((tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA')) {
+    // The event is coming from an input field.
+    key.setScope('input');
+  }
+  else {
+    // The event is coming from somewhere else
+    key.setScope('other');
+  }
+  return true;
+}
+```
+
+However a more robust way to handle this is to use proper
 focus and blur event handlers on your input element, and change scopes there as you see fit.
 
 ## noConflict mode
