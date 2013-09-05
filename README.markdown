@@ -121,21 +121,14 @@ function filter(event){
 }
 ```
 
-If you only want _some_ shortcuts to work while in a input element, you change the scope in the
-`key.filter` function - here's an example implementation, setting the scope to either `'input'` or `'other'`.
-In this case, it's important to always return `true` from the filter function:
+If you only want _some_ shortcuts to work while in an input element, you can change the scope in the
+`key.filter` function. Here's an example implementation, setting the scope to either `'input'` or `'other'`.
+Don't forget to return `true` so the any shortcuts get processed.
 
 ```javascript
 key.filter = function(event){
   var tagName = (event.target || event.srcElement).tagName;
-  if ((tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA')) {
-    // The event is coming from an input field.
-    key.setScope('input');
-  }
-  else {
-    // The event is coming from somewhere else
-    key.setScope('other');
-  }
+  key.setScope(/^(INPUT|TEXTAREA|SELECT)$/.test(tagName) ? 'input' : 'other');
   return true;
 }
 ```
