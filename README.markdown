@@ -122,7 +122,7 @@ function filter(event){
 ```
 
 If you only want _some_ shortcuts to work while in a input element, you change the scope in the
-`key.filter` function - here's an example implementation, setting the scope to either `input` or `other`.
+`key.filter` function - here's an example implementation, setting the scope to either `'input'` or `'other'`.
 In this case, it's important to always return `true` from the filter function:
 
 ```javascript
