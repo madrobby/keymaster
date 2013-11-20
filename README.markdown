@@ -11,14 +11,18 @@ it in.*
 
 ## Usage
 
-Include `keymaster.min.js` in your web app, by loading it as usual:
+Include `keymaster.js` in your web app*, by loading it as usual:
 
 ```html
-<script src="keymaster.min.js"></script>
+<script src="keymaster.js"></script>
 ```
 
 Keymaster has no dependencies and can be used completely standalone.
 It should not interfere with any JavaScript libraries or frameworks.
+
+_*Preferably use a minified version that fits your workflow. You can
+run `make` to have UglifyJS (if you have it installed) create a
+`keymaster.min.js` file for you._
 
 ## Defining shortcuts
 
@@ -50,6 +54,7 @@ key('⌘+r, ctrl+r', function(event, handler){
 // "ctrl+r", "all"
 ```
 
+
 ## Supported keys
 
 Keymaster understands the following modifiers:
@@ -59,6 +64,7 @@ The following special keys can be used for shortcuts:
 `backspace`, `tab`, `clear`, `enter`, `return`, `esc`, `escape`, `space`,
 `up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`
 and `f1` through `f19`.
+
 
 ## Modifier key queries
 
@@ -70,6 +76,7 @@ allows easy implementation of things like shift+click handlers. For example,
 ```javascript
 if(key.shift) alert('shift is pressed, OMGZ!');
 ```
+
 
 ## Other key queries
 
@@ -102,6 +109,7 @@ key('o, enter', 'files', function(){ /* do something else */ });
 // set the scope (only 'all' and 'issues' shortcuts will be honored)
 key.setScope('issues'); // default scope is 'all'
 ```
+
 
 ## Filter key presses
 
@@ -136,6 +144,7 @@ key.filter = function(event){
 However a more robust way to handle this is to use proper
 focus and blur event handlers on your input element, and change scopes there as you see fit.
 
+
 ## noConflict mode
 
 You can call ```key.noConflict``` to remove the ```key``` function from global scope and restore whatever ```key``` was defined to before Keymaster was loaded. Calling ```key.noConflict``` will return the Keymaster ```key``` function.
@@ -147,6 +156,7 @@ k('a', function() { /* ... */ });
 key()
 // --> TypeError: 'undefined' is not a function
 ```
+
 
 ## Unbinding shortcuts
 
@@ -162,12 +172,14 @@ key.unbind('o, enter', 'issues');
 key.unbind('o, enter', 'files');
 ```
 
+
 ## Notes
 
 Keymaster should work with any browser that fires `keyup` and `keydown` events,
 and is tested with IE (6+), Safari, Firefox and Chrome.
 
 See [http://madrobby.github.com/keymaster/](http://madrobby.github.com/keymaster/) for a live demo.
+
 
 ## CoffeeScript
 
@@ -186,19 +198,6 @@ key 'o, enter', 'issues', ->
 alert 'shift is pressed, OMGZ!' if key.shift
 ```
 
-## Ender support
-
-Add `keymaster` as a top level method to your [Ender](http://ender.no.de) compilation.
-
-    $ ender add keymaster
-
-Use it:
-
-``` js
-$.key('⌘+r', function () {
-  alert('reload!')
-})
-```
 
 ## Contributing
 
