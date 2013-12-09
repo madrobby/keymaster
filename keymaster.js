@@ -4,6 +4,7 @@
 
 ;(function(global){
   var k,
+    _document = document,
     _handlers = {},
     _mods = { 16: false, 18: false, 17: false, 91: false },
     _scope = 'all',
@@ -219,6 +220,10 @@
   // initialize key.<modifier> to false
   for(k in _MODIFIERS) assignKey[k] = false;
 
+  // set the context, useful when binding the key events to an iframe.
+  function setDocument(doc) { _document = doc; }
+  function getDocument(doc) { return _document; }
+
   // set current scope (default 'all')
   function setScope(scope){ _scope = scope || 'all' };
   function getScope(){ return _scope || 'all' };
@@ -264,8 +269,8 @@
   };
 
   // set the handlers globally on document
-  addEvent(document, 'keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
-  addEvent(document, 'keyup', clearModifier);
+  addEvent(_document, 'keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
+  addEvent(_document, 'keyup', clearModifier);
 
   // reset modifiers to false whenever the window is (re)focused.
   addEvent(window, 'focus', resetModifiers);
