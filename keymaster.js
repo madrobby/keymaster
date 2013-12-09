@@ -294,7 +294,7 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = key;
   }
-  else if (typeof define !== 'undefined' && define.amd) {
+  else if (typeof define === 'function' && define.amd) {
     define(function() {
       return key;
     });
