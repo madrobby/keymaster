@@ -1,5 +1,5 @@
 {
-  "name": "ys-keymaster",
+  "name": "keymaster",
   "description": "library for defining and dispatching keyboard shortcuts",
   "version": "1.6.1",
   "author": "Thomas Fuchs <thomas@slash7.com> (http://mir.aculo.us)",
