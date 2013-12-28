@@ -179,6 +179,9 @@
         mods = getMods(keys);
         key = keys[keys.length - 1];
       }
+      else {
+        key = keys[0]
+      }
 
       key = code(key);
 
@@ -186,7 +189,7 @@
         scope = getScope();
       }
       if (!_handlers[key]) {
-        return;
+        continue;
       }
       for (i in _handlers[key]) {
         obj = _handlers[key][i];
