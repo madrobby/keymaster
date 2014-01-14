@@ -7,5 +7,7 @@
     "type": "git",
     "url": "https://github.com/madrobby/keymaster"
   },
+  "dependencies": { "uglify-js": "1" },
+  "scripts": { "install": "uglifyjs -o keymaster.min.js keymaster.js" },
   "main": "./keymaster.js"
 }
