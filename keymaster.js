@@ -188,6 +188,9 @@
         return;
       }
       for (i in _handlers[key]) {
+        if (!_handlers[key].hasOwnProperty(i)) {
+          continue;
+        }
         obj = _handlers[key][i];
         // only clear handlers if correct scope and mods match
         if (obj.scope === scope && compareArray(obj.mods, mods)) {
