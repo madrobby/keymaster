@@ -98,7 +98,7 @@ key.getPressedKeyCodes() // returns an array of key codes currently pressed
 
 ## Scopes
 
-If you want to reuse the same shortcut for seperate areas in your single page app,
+If you want to reuse the same shortcut for separate areas in your single page app,
 Keymaster supports switching between scopes. Use the `key.setScope` method to set scope.
 
 ```javascript
