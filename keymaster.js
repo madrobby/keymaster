@@ -60,7 +60,7 @@
   };
   function updateModifierKey(event) {
       for(k in _mods) _mods[k] = event[modifierMap[k]];
-  };
+  }
 
   // handle keydown event
   function dispatch(event) {
@@ -112,7 +112,7 @@
         }
       }
     }
-  };
+  }
 
   // unset modifier keys on keyup
   function clearModifier(event){
@@ -129,12 +129,12 @@
       _mods[key] = false;
       for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
     }
-  };
+  }
 
   function resetModifiers() {
     for(k in _mods) _mods[k] = false;
     for(k in _MODIFIERS) assignKey[k] = false;
-  };
+  }
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
@@ -161,7 +161,7 @@
       if (!(key in _handlers)) _handlers[key] = [];
       _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
     }
-  };
+  }
 
   // unbind all handlers for given key in current scope
   function unbindKey(key, scope) {
@@ -195,7 +195,7 @@
         }
       }
     }
-  };
+  }
 
   // Returns true if the key with code 'keyCode' is currently down
   // Converts strings into key codes.
@@ -220,8 +220,8 @@
   for(k in _MODIFIERS) assignKey[k] = false;
 
   // set current scope (default 'all')
-  function setScope(scope){ _scope = scope || 'all' };
-  function getScope(){ return _scope || 'all' };
+  function setScope(scope){ _scope = scope || 'all' }
+  function getScope(){ return _scope || 'all' }
 
   // delete all handlers for a given scope
   function deleteScope(scope){
@@ -234,7 +234,7 @@
         else i++;
       }
     }
-  };
+  }
 
   // abstract key logic for assign and unassign
   function getKeys(key) {
@@ -261,7 +261,7 @@
       object.addEventListener(event, method, false);
     else if(object.attachEvent)
       object.attachEvent('on'+event, function(){ method(window.event) });
-  };
+  }
 
   // set the handlers globally on document
   addEvent(document, 'keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
@@ -280,17 +280,27 @@
     return k;
   }
 
-  // set window.key and window.key.set/get/deleteScope, and the default filter
-  global.key = assignKey;
-  global.key.setScope = setScope;
-  global.key.getScope = getScope;
-  global.key.deleteScope = deleteScope;
-  global.key.filter = filter;
-  global.key.isPressed = isPressed;
-  global.key.getPressedKeyCodes = getPressedKeyCodes;
-  global.key.noConflict = noConflict;
-  global.key.unbind = unbindKey;
+  var key = assignKey;
+  key.setScope = setScope;
+  key.getScope = getScope;
+  key.deleteScope = deleteScope;
+  key.filter = filter;
+  key.isPressed = isPressed;
+  key.getPressedKeyCodes = getPressedKeyCodes;
+  key.noConflict = noConflict;
+  key.unbind = unbindKey;
 
-  if(typeof module !== 'undefined') module.exports = key;
+  // set window.key and window.key.set/get/deleteScope, and the default filter
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = key;
+  }
+  else if (typeof define === 'function' && define.amd) {
+    define(function() {
+      return key;
+    });
+  }
+  else {
+    global.key = key;
+  }
 
 })(this);
