@@ -3,6 +3,7 @@
 //     keymaster.js may be freely distributed under the MIT license.
 
 ;(function(global){
+  if (typeof document == 'undefined') return;
   var k,
     _handlers = {},
     _mods = { 16: false, 18: false, 17: false, 91: false },
@@ -178,6 +179,9 @@
         mods = getMods(keys);
         key = keys[keys.length - 1];
       }
+      else {
+        key = keys[0]
+      }
 
       key = code(key);
 
@@ -185,7 +189,7 @@
         scope = getScope();
       }
       if (!_handlers[key]) {
-        return;
+        continue;
       }
       for (i = 0; i < _handlers[key].length; i++) {
         obj = _handlers[key][i];
@@ -291,6 +295,6 @@
   global.key.noConflict = noConflict;
   global.key.unbind = unbindKey;
 
-  if(typeof module !== 'undefined') module.exports = key;
+  if(typeof module !== 'undefined') module.exports = global.key;
 
 })(this);
