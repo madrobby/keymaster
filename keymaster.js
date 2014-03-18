@@ -187,7 +187,7 @@
       if (!_handlers[key]) {
         return;
       }
-      for (i = 0; i < _handlers[key].length; i++) {
+      for (i in _handlers[key]) {
         obj = _handlers[key][i];
         // only clear handlers if correct scope and mods match
         if (obj.scope === scope && compareArray(obj.mods, mods)) {
@@ -291,6 +291,6 @@
   global.key.noConflict = noConflict;
   global.key.unbind = unbindKey;
 
-  if(typeof module !== 'undefined') module.exports = key;
+  if(typeof module !== 'undefined') module.exports = global.key;
 
-})(this);
+})(window);
