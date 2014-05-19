@@ -172,13 +172,14 @@
     multipleKeys = getKeys(key);
 
     for (j = 0; j < multipleKeys.length; j++) {
-      keys = multipleKeys[j].split('+');
+      key = multipleKeys[j].split('+');
 
-      if (keys.length > 1) {
-        mods = getMods(keys);
-        key = keys[keys.length - 1];
+      if (key.length > 1) {
+        mods = getMods(key);
+        key = [key[key.length - 1]];
       }
 
+      key = key[0];
       key = code(key);
 
       if (scope === undefined) {
