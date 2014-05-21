@@ -79,6 +79,55 @@
         t.assertEqual(1, cnt);
       },
 
+      testShortcutWithMultipleKeysCombination: function (t){
+        var cntCtrlWP = 0, cntShiftWP = 0, cntCtrlShiftP = 0, cntCommandAltP = 0, cntCommandCtrlShiftWP = 0;
+        key('ctrl+w+p', function() { cntCtrlWP++ });
+        key('shift+w+p', function() { cntShiftWP++ });
+        key('ctrl+shift+p', function() { cntCtrlShiftP++ });
+        key('command+alt+p', function() { cntCommandAltP++ });
+        key('command+shift+w+p', function() { cntCommandCtrlShiftWP++ });
+
+        keydown(KEYS.ctrl); keydown(87); keydown(80);
+        t.assertEqual(1, cntCtrlWP);
+        t.assertEqual(0, cntShiftWP);
+        t.assertEqual(0, cntCtrlShiftP);
+        t.assertEqual(0, cntCommandAltP);
+        t.assertEqual(0, cntCommandCtrlShiftWP);
+        keyup(KEYS.ctrl); keyup(87); keyup(80);
+
+        keydown(KEYS.shift); keydown(87); keydown(80);
+        t.assertEqual(1, cntCtrlWP);
+        t.assertEqual(1, cntShiftWP);
+        t.assertEqual(0, cntCtrlShiftP);
+        t.assertEqual(0, cntCommandAltP);
+        t.assertEqual(0, cntCommandCtrlShiftWP);
+        keyup(KEYS.shift); keyup(87); keyup(80);
+
+        keydown(KEYS.ctrl); keydown(KEYS.shift); keydown(80);
+        t.assertEqual(1, cntCtrlWP);
+        t.assertEqual(1, cntShiftWP);
+        t.assertEqual(1, cntCtrlShiftP);
+        t.assertEqual(0, cntCommandAltP);
+        t.assertEqual(0, cntCommandCtrlShiftWP);
+        keyup(KEYS.ctrl); keyup(KEYS.shift); keyup(80);
+
+        keydown(KEYS.command); keydown(KEYS.alt); keydown(80);
+        t.assertEqual(1, cntCtrlWP);
+        t.assertEqual(1, cntShiftWP);
+        t.assertEqual(1, cntCtrlShiftP);
+        t.assertEqual(1, cntCommandAltP);
+        t.assertEqual(0, cntCommandCtrlShiftWP);
+        keyup(KEYS.command); keyup(KEYS.alt); keyup(80);
+
+        keydown(KEYS.command); keydown(KEYS.shift); keydown(87); keydown(80);
+        t.assertEqual(1, cntCtrlWP);
+        t.assertEqual(1, cntShiftWP);
+        t.assertEqual(1, cntCtrlShiftP);
+        t.assertEqual(1, cntCommandAltP);
+        t.assertEqual(1, cntCommandCtrlShiftWP);
+        keyup(KEYS.command); keyup(KEYS.shift); keyup(87); keyup(80);
+      },
+
       testShortcutWithModifiers: function(t){
         var cntA = 0, cntShiftA = 0, cntCtrlShiftA = 0, cntCommandCtrlShiftA = 0, cntCommandCtrlAltShiftA = 0;
         key('a', function(){ cntA++ });

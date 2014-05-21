@@ -96,13 +96,8 @@
 
       // see if it's in the current scope
       if(handler.scope == scope || handler.scope == 'all'){
-        // check if modifiers match if any
-        modifiersMatch = handler.mods.length > 0;
-        for(k in _mods)
-          if((!_mods[k] && index(handler.mods, +k) > -1) ||
-            (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
         // call the handler and stop the event if neccessary
-        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
+        if (_downKeys.length == (handler.mods.length + 1) && checkKeys(handler.key)) {
           if(handler.method(event, handler)===false){
             if(event.preventDefault) event.preventDefault();
               else event.returnValue = false;
@@ -113,6 +108,14 @@
       }
     }
   };
+
+  function checkKeys(key) {
+    var keys = key.split('+');
+    for (var i = 0, l = keys.length; i < l; i++) {
+      if (index(_downKeys, _MODIFIERS[keys[i]] || code(keys[i])) == -1) return false;
+    }
+    return true;
+  }
 
   // unset modifier keys on keyup
   function clearModifier(event){
