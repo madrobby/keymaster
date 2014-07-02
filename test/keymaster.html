@@ -199,6 +199,23 @@
         t.assertEqual(1, cntCtrlShiftA);
       },
 
+      testUnbindWithKeysMultiple: function(t){
+        var cntSlashF = 0;
+        key('/, f', function(){ cntSlashF++ });
+
+        keydown(191); keyup(191);
+        keydown(70); keyup(70);
+
+        t.assertEqual(2, cntSlashF);
+
+        key.unbind('/, f');
+
+        keydown(191); keyup(191);
+        keydown(70); keyup(70);
+
+        t.assertEqual(2, cntSlashF);
+      },
+
       testFancyModifierKeys: function(t){
         var sequence = '';
         key('⌃+a', function(){ sequence += 'a' });
