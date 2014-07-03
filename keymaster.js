@@ -30,7 +30,7 @@
       '[': 219, ']': 221, '\\': 220
     },
     code = function(x){
-      return _MAP[x] || x.toUpperCase().charCodeAt(0);
+      return _MAP[x] || _MODIFIERS[x] || x.toUpperCase().charCodeAt(0);
     },
     _downKeys = [];
 
