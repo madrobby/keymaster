@@ -77,7 +77,8 @@
       _mods[key] = true;
       // 'assignKey' from inside this closure is exported to window.key
       for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = true;
-      return;
+      if(!(key in _handlers)) // allow single modifier shortcuts to execute
+        return;               // for combinations, return and wait for the second keypress 
     }
     updateModifierKey(event);
 
@@ -150,13 +151,22 @@
       // set modifier keys if any
       mods = [];
       key = keys[i].split('+');
-      if (key.length > 1){
-        mods = getMods(key);
-        key = [key[key.length-1]];
+      
+      // account for the case where shortcut is a single modifier
+      if (key in _MODIFIERS){
+        key = _MODIFIERS[key];
+        mods = [key];
       }
-      // convert to keycode and...
-      key = key[0]
-      key = code(key);
+      // all other cases
+      else{
+        if (key.length > 1){
+          mods = getMods(key);
+          key = [key[key.length-1]];
+        }
+        // convert to keycode and...
+        key = key[0]
+        key = code(key);
+      }
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
       _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
@@ -174,12 +184,20 @@
     for (j = 0; j < multipleKeys.length; j++) {
       keys = multipleKeys[j].split('+');
 
-      if (keys.length > 1) {
-        mods = getMods(keys);
+      // account for the case where shortcut is a single modifier
+      if (key in _MODIFIERS){
+        key = _MODIFIERS[key];
+        mods = [key];
       }
+      // all other cases
+      else {
+        if (keys.length > 1) {
+          mods = getMods(keys);
+        }
 
-      key = keys[keys.length - 1];
-      key = code(key);
+        key = keys[keys.length - 1];
+        key = code(key);
+      }
 
       if (scope === undefined) {
         scope = getScope();
