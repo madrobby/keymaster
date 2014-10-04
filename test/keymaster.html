@@ -36,6 +36,8 @@
       var event = document.createEvent('Event');
       event.initEvent('keydown', true, true);
       event.keyCode = code;
+      if(code in modifierMap)
+        modifiers = [code];
       if (modifiers && modifiers.length > 0)
           for(i in modifiers) event[modifierMap[modifiers[i]]] = true;
       (el||document).dispatchEvent(event);
@@ -125,6 +127,48 @@
         t.assertEqual(1, cntCtrlShiftA);
         t.assertEqual(1, cntCommandCtrlShiftA);
         t.assertEqual(1, cntCommandCtrlAltShiftA);
+      },
+
+      testModifierOnlyShortcuts: function(t){
+        var ctrl = 0, shift = 0, shiftA = 0;
+        key('ctrl', function(){ ctrl++ });
+        key('shift', function(){ shift++ });
+        key('shift+a', function(){ shiftA++ });
+
+        keydown(KEYS.ctrl); keyup(KEYS.ctrl);
+        t.assertEqual(1, ctrl);
+        t.assertEqual(0, shift);
+        t.assertEqual(0, shiftA);
+
+        keydown(KEYS.shift); 
+        t.assertEqual(1, ctrl);
+        t.assertEqual(1, shift);
+        t.assertEqual(0, shiftA);
+        keydown(65,[KEYS.shift]); keyup(65);
+        t.assertEqual(1, ctrl);
+        t.assertEqual(1, shift);
+        t.assertEqual(1, shiftA);
+        keydown(65,[KEYS.shift]); keyup(65);
+        t.assertEqual(1, ctrl);
+        t.assertEqual(1, shift);
+        t.assertEqual(2, shiftA);
+        keyup(KEYS.shift);
+        t.assertEqual(1, ctrl);
+        t.assertEqual(1, shift);
+        t.assertEqual(2, shiftA);
+
+        key.unbind('ctrl','all');
+        key.unbind('shift','all');
+        key.unbind('shift+a','all');
+
+        keydown(KEYS.ctrl); keyup(KEYS.ctrl);
+        t.assertEqual(1, ctrl);
+        keydown(KEYS.shift); 
+        t.assertEqual(1, shift);
+        keydown(65,[KEYS.shift]); keyup(65);
+        t.assertEqual(2, shiftA);
+        keyup(KEYS.shift);
+        t.assertEqual(1, shift);
       },
 
       testUnbindWithModifiers: function(t){
