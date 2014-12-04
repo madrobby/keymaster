@@ -64,6 +64,8 @@
 
   // handle keydown event
   function dispatch(event) {
+    fixEvent(event);
+
     var key, handler, k, i, modifiersMatch, scope;
     key = event.keyCode;
 
@@ -79,6 +81,7 @@
       for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = true;
       return;
     }
+
     updateModifierKey(event);
 
     // see if we need to ignore the keypress (filter() can can be overridden)
@@ -95,7 +98,7 @@
       handler = _handlers[key][i];
 
       // see if it's in the current scope
-      if(handler.scope == scope || handler.scope == 'all'){
+      if(handler.scope == scope || handler.scope == 'all' || bodyContains(handler.scope)){
         // check if modifiers match if any
         modifiersMatch = handler.mods.length > 0;
         for(k in _mods)
@@ -104,14 +107,43 @@
         // call the handler and stop the event if neccessary
         if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
           if(handler.method(event, handler)===false){
-            if(event.preventDefault) event.preventDefault();
-              else event.returnValue = false;
-            if(event.stopPropagation) event.stopPropagation();
-            if(event.cancelBubble) event.cancelBubble = true;
+            event.preventDefault();
+            event.stopPropagation();
           }
         }
       }
     }
+  };
+
+  function fixEvent(event) {
+    var defaultPrevented = false;
+
+    event.target = event.target || event.srcElement;
+
+    !event.isDefaultPrevented && (event.isDefaultPrevented = function () {
+      return defaultPrevented;
+    });
+
+    !event.preventDefault && (event.preventDefault = function () {
+      defaultPrevented = true;
+      event.returnValue = false;
+    });
+
+    !event.stopPropagation && (event.stopPropagation = function () {
+      event.cancelBubble = false;
+    });
+  };
+
+  function bodyContains(el) {
+    if (el && el.nodeType === 1) {
+      do {
+        if (el === document.body) {
+          return true;
+        }
+      } while (el = el.parentNode);
+    }
+
+    return false;
   };
 
   // unset modifier keys on keyup
@@ -159,17 +191,27 @@
       key = code(key);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      _handlers[key].push({
+        shortcut: keys[i],
+        scope: scope,
+        method: method,
+        key: keys[i],
+        mods: mods
+      });
     }
   };
 
   // unbind all handlers for given key in current scope
-  function unbindKey(key, scope) {
+  function unbindKey(key, scope, method) {
     var multipleKeys, keys,
       mods = [],
       i, j, obj;
 
     multipleKeys = getKeys(key);
+    if (typeof scope === 'function') {
+      method = scope;
+      scope = 'all';
+    }
 
     for (j = 0; j < multipleKeys.length; j++) {
       keys = multipleKeys[j].split('+');
@@ -190,8 +232,9 @@
       for (i = 0; i < _handlers[key].length; i++) {
         obj = _handlers[key][i];
         // only clear handlers if correct scope and mods match
-        if (obj.scope === scope && compareArray(obj.mods, mods)) {
-          _handlers[key][i] = {};
+        if (obj.scope === scope && (method === undefined || obj.method === method) && compareArray(obj.mods, mods)) {
+          _handlers[key].splice(i, 1);
+          i--;
         }
       }
     }
@@ -211,7 +254,7 @@
   }
 
   function filter(event){
-    var tagName = (event.target || event.srcElement).tagName;
+    var tagName = event.target.tagName;
     // ignore keypressed in any elements that support keyboard data input
     return !(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
   }
@@ -290,6 +333,9 @@
   global.key.getPressedKeyCodes = getPressedKeyCodes;
   global.key.noConflict = noConflict;
   global.key.unbind = unbindKey;
+
+  global.key.on = assignKey;
+  global.key.off = unbindKey;
 
   if(typeof module !== 'undefined') module.exports = assignKey;
 

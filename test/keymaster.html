@@ -79,6 +79,27 @@
         t.assertEqual(1, cnt);
       },
 
+      testUnbindWithHandler: function(t){
+        var cnt = 0,
+          noop = function () {},
+          handle = function(){ cnt++ };
+
+        key('a', handle);
+
+        keydown(65); keyup(65);
+        t.assertEqual(1, cnt);
+
+        key.unbind('a', noop);
+
+        keydown(65); keyup(65);
+        t.assertEqual(2, cnt);
+
+        key.unbind('a', handle);
+
+        keydown(65); keyup(65);
+        t.assertEqual(2, cnt);
+      },
+
       testShortcutWithModifiers: function(t){
         var cntA = 0, cntShiftA = 0, cntCtrlShiftA = 0, cntCommandCtrlShiftA = 0, cntCommandCtrlAltShiftA = 0;
         key('a', function(){ cntA++ });
@@ -308,6 +329,37 @@
         key.setScope('all');
 
         t.assertEqual('ab', sequence);
+      },
+
+      testElementScoping: function(t){
+        var cnt = 0,
+          scopeEl = $('textarea'),
+          handle = function(){ cnt++ };
+
+        key('a', scopeEl, handle);
+
+        keydown(65); keyup(65);
+        t.assertEqual(cnt, 1);
+
+        scopeEl.parentNode.removeChild(scopeEl);
+
+        keydown(65); keyup(65);
+        t.assertEqual(cnt, 1);
+
+        document.body.appendChild(scopeEl);
+
+        keydown(65); keyup(65);
+        t.assertEqual(cnt, 2);
+
+        key.unbind('a', scopeEl, function () {});
+
+        keydown(65); keyup(65);
+        t.assertEqual(cnt, 3);
+
+        key.unbind('a', scopeEl);
+
+        keydown(65); keyup(65);
+        t.assertEqual(cnt, 3);
       },
 
       testDeleteScope: function(t){
