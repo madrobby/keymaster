@@ -1,0 +1,27 @@
+{
+  "name": "keymaster",
+  "main": "keymaster.js",
+  "version": "1.6.3",
+  "homepage": "https://github.com/madrobby/keymaster",
+  "authors": [
+    "Thomas Fuchs <thomas@slash7.com> (http://mir.aculo.us)"
+  ],
+  "description": "library for defining and dispatching keyboard shortcuts",
+  "moduleType": [
+    "es6",
+    "globals"
+  ],
+  "keywords": [
+    "key",
+    "keyboard",
+    "shortcuts"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
