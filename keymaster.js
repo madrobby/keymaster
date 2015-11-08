@@ -25,12 +25,19 @@
       home: 36, end: 35,
       pageup: 33, pagedown: 34,
       ',': 188, '.': 190, '/': 191,
-      '`': 192, '-': 189, '=': 187,
+      '`': 192,
+      '-': function() {
+        return (getBrowserName() == "firefox") ? 173 : 189;
+      },
+      '=': function() {
+        return (getBrowserName() == "firefox") ? 61 : 187;
+      },
       ';': 186, '\'': 222,
       '[': 219, ']': 221, '\\': 220
     },
     code = function(x){
-      return _MAP[x] || x.toUpperCase().charCodeAt(0);
+      var code = _MAP[x] || x.toUpperCase().charCodeAt(0);
+      return (typeof code === "function") ? code() : code;
     },
     _downKeys = [];
 
@@ -50,6 +57,10 @@
         if (a1[i] !== a2[i]) return false;
     }
     return true;
+  }
+
+  function getBrowserName() {
+    if(navigator.userAgent.toLowerCase().indexOf('firefox') > 0) return "firefox";
   }
 
   var modifierMap = {
