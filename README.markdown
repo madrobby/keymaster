@@ -108,6 +108,10 @@ key('o, enter', 'files', function(){ /* do something else */ });
 
 // set the scope (only 'all' and 'issues' shortcuts will be honored)
 key.setScope('issues'); // default scope is 'all'
+
+// remove all events that are set in 'issues' scope
+key.deleteScope('issues');
+
 ```
 
 
