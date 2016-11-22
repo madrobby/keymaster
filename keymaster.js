@@ -190,7 +190,7 @@
       for (i = 0; i < _handlers[key].length; i++) {
         obj = _handlers[key][i];
         // only clear handlers if correct scope and mods match
-        if (obj.scope === scope && compareArray(obj.mods, mods)) {
+        if (obj && obj.scope === scope && compareArray(obj.mods, mods)) {
           _handlers[key][i] = {};
         }
       }
