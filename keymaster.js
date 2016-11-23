@@ -64,7 +64,7 @@
 
   // handle keydown event
   function dispatch(event) {
-    var key, handler, k, i, modifiersMatch, scope;
+    var key, handler, k, i, modifiersMatch, scope, numEvents;
     key = event.keyCode;
 
     if (index(_downKeys, key) == -1) {
@@ -90,8 +90,9 @@
 
     scope = getScope();
 
+    numEvents = _handlers[key].length;
     // for each potential shortcut
-    for (i = 0; i < _handlers[key].length; i++) {
+    for (i = 0; i < numEvents; i++) {
       handler = _handlers[key][i];
 
       // see if it's in the current scope
