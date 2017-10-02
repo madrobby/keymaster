@@ -21,6 +21,7 @@
       esc: 27, escape: 27, space: 32,
       left: 37, up: 38,
       right: 39, down: 40,
+      ins: 45, 'insert': 45,      
       del: 46, 'delete': 46,
       home: 36, end: 35,
       pageup: 33, pagedown: 34,
