@@ -39,6 +39,7 @@
   // IE doesn't support Array#indexOf, so have a simple replacement
   function index(array, item){
     var i = array.length;
+    if([].indexOf) return array.indexOf(item);
     while(i--) if(array[i]===item) return i;
     return -1;
   }
