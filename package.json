@@ -7,5 +7,6 @@
     "type": "git",
     "url": "https://github.com/madrobby/keymaster"
   },
-  "main": "./keymaster.js"
+  "main": "./keymaster.js",
+  "license": "MIT"
 }
