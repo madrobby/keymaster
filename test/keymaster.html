@@ -450,6 +450,18 @@
 
         key.filter = oldFilter;
         key.setScope();
+      },
+
+      testNewlyAddedHandlers: function(t) {
+        var keyCalls = 0, k = key;
+        k('a', function() {
+          keyCalls++;
+          k('a', function() { keyCalls++; });
+        });
+
+        keydown(65);
+        keyup(65);
+        t.assertEqual(1, keyCalls);
       }
     });
   </script>
