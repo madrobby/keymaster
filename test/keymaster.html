@@ -48,6 +48,12 @@
       (el||document).dispatchEvent(event);
     }
 
+    function triggerEvent(eventName, el){
+      var event = document.createEvent('Event');
+      event.initEvent(eventName, true, true);
+      (el||document).dispatchEvent(event);
+    }
+
     var KEYS = {
       '⇧': 16, shift: 16,
       '⌥': 18, alt: 18, option: 18,
@@ -402,6 +408,14 @@
         t.assertTrue(pressedKeys.indexOf(16) >= 0);
         t.assertTrue(pressedKeys !== otherKeys);
         keyup(65); keyup(KEYS.shift);
+
+        keydown(65);
+        t.assertTrue(key.isPressed(65));
+        t.assertEqual(key.getPressedKeyCodes().length, 1);
+        triggerEvent('focus', window);
+        t.assertFalse(key.isPressed(65));
+        t.assertEqual(key.getPressedKeyCodes().length, 0);
+        keyup(65);
       },
 
       testNoConflict: function(t) {
