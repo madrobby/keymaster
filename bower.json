@@ -1,7 +1,6 @@
 {
   "name": "keymaster",
   "main": "keymaster.js",
-  "version": "1.6.3",
   "homepage": "https://github.com/madrobby/keymaster",
   "authors": [
     "Thomas Fuchs <thomas@slash7.com> (http://mir.aculo.us)"
