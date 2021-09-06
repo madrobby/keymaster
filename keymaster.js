@@ -264,7 +264,7 @@
   };
 
   // set the handlers globally on document
-  if (window && window.document) {
+  if (typeof window !== 'undefined' && window.document) {
     addEvent(window.document, 'keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
     addEvent(window.document, 'keyup', clearModifier);
   }
