@@ -243,6 +243,7 @@
     keys = key.split(',');
     if ((keys[keys.length - 1]) == '') {
       keys[keys.length - 2] += ',';
+      keys.pop();
     }
     return keys;
   }
