@@ -243,6 +243,7 @@
     keys = key.split(',');
     if ((keys[keys.length - 1]) == '') {
       keys[keys.length - 2] += ',';
+      keys.pop();
     }
     return keys;
   }
@@ -266,7 +267,7 @@
   // set the handlers globally on document
   addEvent(document, 'keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
   addEvent(document, 'keyup', clearModifier);
-
+git
   // reset modifiers to false whenever the window is (re)focused.
   addEvent(window, 'focus', resetModifiers);
 
